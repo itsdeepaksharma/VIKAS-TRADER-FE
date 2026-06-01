@@ -1,0 +1,54 @@
+import { motion } from 'framer-motion';
+import { Grid3X3, Heart, Home, ShoppingCart, User } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
+
+import { useCartStore } from '../../store/cartStore';
+import { cn } from '../../lib/utils';
+
+const navItems = [
+  { to: '/', icon: Home, label: 'Home' },
+  { to: '/categories', icon: Grid3X3, label: 'Categories' },
+  { to: '/wishlist', icon: Heart, label: 'Wishlist' },
+  { to: '/cart', icon: ShoppingCart, label: 'Cart' },
+  { to: '/profile', icon: User, label: 'Profile' },
+];
+
+export function BottomNavigation() {
+  const itemCount = useCartStore((s) => s.itemCount());
+
+  return (
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-100 bg-white/95 px-2 pb-safe pt-2 shadow-[0_-4px_24px_rgba(0,0,0,0.06)] backdrop-blur-lg">
+      <div className="mx-auto flex max-w-lg items-center justify-around">
+        {navItems.map(({ to, icon: Icon, label }) => (
+          <NavLink key={to} to={to} end={to === '/'}>
+            {({ isActive }) => (
+              <motion.div
+                whileTap={{ scale: 0.9 }}
+                className={cn(
+                  'flex flex-col items-center gap-0.5 rounded-2xl px-3 py-2 transition-colors',
+                  isActive ? 'text-vt-blue' : 'text-slate-400',
+                )}
+              >
+                <div className="relative">
+                  <Icon className={cn('h-6 w-6', isActive && 'stroke-[2.5]')} />
+                  {label === 'Cart' && itemCount > 0 && (
+                    <span className="absolute -right-2 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-vt-gradient px-1 text-[10px] font-bold text-white">
+                      {itemCount > 9 ? '9+' : itemCount}
+                    </span>
+                  )}
+                </div>
+                <span className="text-[10px] font-medium">{label}</span>
+                {isActive && (
+                  <motion.div
+                    layoutId="nav-indicator"
+                    className="absolute -bottom-0.5 h-0.5 w-8 rounded-full bg-vt-blue"
+                  />
+                )}
+              </motion.div>
+            )}
+          </NavLink>
+        ))}
+      </div>
+    </nav>
+  );
+}

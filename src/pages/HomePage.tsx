@@ -1,32 +1,99 @@
-import { LoadingSpinner } from '../components/LoadingSpinner';
-import { useHealth } from '../hooks/useHealth';
+import { Bell, Grid3X3, Sparkles, Tag, TrendingUp } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
+import { CategoryCard } from '../components/ecommerce/CategoryCard';
+import { HeroBanner } from '../components/ecommerce/HeroBanner';
+import { ProductCard } from '../components/ecommerce/ProductCard';
+import { SearchBar } from '../components/ecommerce/SearchBar';
+import { SectionHeader } from '../components/ecommerce/SectionHeader';
+import { quickActions } from '../data/mockCategories';
+import { useCategories, useProducts } from '../hooks/useCatalog';
+import { useAuthStore } from '../store/authStore';
+
+const quickIcons = {
+  grid: Grid3X3,
+  sparkles: Sparkles,
+  trending: TrendingUp,
+  tag: Tag,
+};
 
 export function HomePage() {
-  const { data, isLoading, isError } = useHealth();
+  const user = useAuthStore((s) => s.user);
+  const { data: categories = [], isLoading: loadingCategories } = useCategories();
+  const { data: bestSellers = [], isLoading: loadingProducts } = useProducts({
+    best_sellers: true,
+  });
+  const homeCategories = categories.slice(0, 6);
 
   return (
-    <section className="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
-      <p className="text-sm font-medium uppercase tracking-wide text-blue-600">Full-stack starter</p>
-      <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
-        Production-ready Vikas Trader base
-      </h1>
-      <p className="mt-4 max-w-2xl text-slate-600">
-        React, FastAPI, PostgreSQL, SQLAlchemy, Alembic, Docker, and clean architecture
-        foundations are ready for feature development.
-      </p>
-
-      <div className="mt-8 rounded-xl border border-slate-200 bg-slate-50 p-5">
-        <h2 className="text-base font-semibold text-slate-900">Backend health</h2>
-        <div className="mt-3 text-sm text-slate-700">
-          {isLoading && <LoadingSpinner />}
-          {isError && <span className="text-red-600">Unable to reach the API.</span>}
-          {data && (
-            <span>
-              {data.service} is <strong>{data.status}</strong> in {data.environment}.
-            </span>
-          )}
+    <div className="px-4 pb-4 pt-4">
+      <header className="mb-4 flex items-center justify-between">
+        <div>
+          <p className="text-sm text-slate-500">Good Morning,</p>
+          <h1 className="text-xl font-bold text-vt-dark">
+            {user?.name?.split(' ')[0] ?? 'Guest'} 👋
+          </h1>
         </div>
-      </div>
-    </section>
+        <button
+          type="button"
+          className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-white shadow-card"
+        >
+          <Bell className="h-5 w-5 text-vt-dark" />
+          <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-vt-green" />
+        </button>
+      </header>
+
+      <SearchBar className="mb-5" />
+
+      <HeroBanner />
+
+      <section className="mt-6">
+        <div className="grid grid-cols-4 gap-3">
+          {quickActions.map((action) => {
+            const Icon = quickIcons[action.icon as keyof typeof quickIcons];
+            return (
+              <Link
+                key={action.id}
+                to={action.path}
+                className="flex flex-col items-center gap-2 rounded-2xl bg-white p-3 shadow-card transition-shadow hover:shadow-elevated"
+              >
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-vt-light-blue">
+                  <Icon className="h-6 w-6 text-vt-blue" />
+                </div>
+                <span className="text-center text-[10px] font-semibold text-vt-dark">
+                  {action.label}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="mt-8">
+        <SectionHeader title="Top Categories" actionTo="/categories" />
+        {loadingCategories ? (
+          <p className="text-sm text-slate-500">Loading categories...</p>
+        ) : (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {homeCategories.map((cat) => (
+              <CategoryCard key={cat.id} category={cat} variant="compact" />
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="mt-8">
+        <SectionHeader title="Best Sellers" actionTo="/categories/containers" />
+        {loadingProducts ? (
+          <p className="text-sm text-slate-500">Loading products...</p>
+        ) : (
+          <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2">
+            {bestSellers.map((product) => (
+              <ProductCard key={product.id} product={product} layout="horizontal" />
+            ))}
+          </div>
+        )}
+      </section>
+    </div>
   );
 }

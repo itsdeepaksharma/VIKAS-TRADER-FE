@@ -23,8 +23,42 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      useAuthStore.getState().clearSession();
+      useAuthStore.getState().logout();
     }
     return Promise.reject(error);
   },
 );
+
+type ValidationErrorItem = {
+  msg?: string;
+  loc?: (string | number)[];
+};
+
+export function getApiErrorMessage(error: unknown, fallback: string): string {
+  if (axios.isAxiosError(error)) {
+    if (!error.response) {
+      if (error.code === 'ECONNABORTED') {
+        return 'Request timed out. Please try again.';
+      }
+      return 'Cannot reach the server. Start the backend API on port 8000, then try again.';
+    }
+
+    const data = error.response.data as {
+      detail?: unknown;
+      message?: string;
+    };
+
+    if (typeof data?.detail === 'string') return data.detail;
+    if (typeof data?.message === 'string') return data.message;
+
+    if (Array.isArray(data?.detail)) {
+      const first = data.detail[0] as ValidationErrorItem;
+      if (first?.msg) {
+        const field = first.loc?.slice(-1)[0];
+        return field ? `${String(field)}: ${first.msg}` : first.msg;
+      }
+    }
+  }
+
+  return fallback;
+}
