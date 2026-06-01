@@ -7,6 +7,7 @@ export function useMyOrders() {
   return useQuery({
     queryKey: ['my-orders'],
     queryFn: async () => (await fetchMyOrders()).map(mapOrder),
+    refetchInterval: 30_000,
   });
 }
 

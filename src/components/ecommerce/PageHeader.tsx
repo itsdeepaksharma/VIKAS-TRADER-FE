@@ -17,7 +17,7 @@ export function PageHeader({ title, showBack = true, rightAction, className }: P
   return (
     <header
       className={cn(
-        'sticky top-0 z-40 flex items-center gap-3 border-b border-slate-100 bg-white/95 px-4 py-3 backdrop-blur-lg',
+        'relative z-10 flex shrink-0 items-center gap-3 border-b border-slate-100 bg-white px-4 py-3',
         className,
       )}
     >

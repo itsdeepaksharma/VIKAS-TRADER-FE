@@ -8,8 +8,11 @@ export default {
         vt: {
           blue: '#00A3FF',
           green: '#39FF6A',
+          beige: '#EDE6D6',
+          'beige-light': '#FAF7F2',
+          'beige-warm': '#F5F0E8',
           'light-blue': '#E8F6FF',
-          'light-mint': '#DFFCF0',
+          'light-mint': '#F0EBE3',
           dark: '#1F2937',
         },
       },
@@ -28,8 +31,7 @@ export default {
       },
       backgroundImage: {
         'vt-gradient': 'linear-gradient(135deg, #00A3FF 0%, #39FF6A 100%)',
-        'vt-gradient-soft':
-          'linear-gradient(180deg, #00A3FF 0%, #00C4FF 40%, #39FF6A 100%)',
+        'vt-gradient-soft': 'linear-gradient(180deg, #FAF7F2 0%, #F5F0E8 50%, #EDE6D6 100%)',
       },
     },
   },

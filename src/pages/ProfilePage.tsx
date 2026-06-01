@@ -1,7 +1,6 @@
 import {
   Bell,
   ChevronRight,
-  CreditCard,
   Heart,
   HelpCircle,
   LogOut,
@@ -14,20 +13,22 @@ import { useNavigate } from 'react-router-dom';
 
 import { PageHeader } from '../components/ecommerce/PageHeader';
 import { useAuthStore } from '../store/authStore';
+import { useNotificationStore } from '../store/notificationStore';
 
 const menuItems = [
   { icon: Package, label: 'My Orders', path: '/orders' },
   { icon: Heart, label: 'Wishlist', path: '/wishlist' },
-  { icon: MapPin, label: 'Addresses', path: '/profile' },
-  { icon: CreditCard, label: 'Payment Methods', path: '/profile' },
-  { icon: Bell, label: 'Notifications', path: '/profile' },
-  { icon: Settings, label: 'Settings', path: '/profile' },
+  { icon: MapPin, label: 'Addresses', path: '/profile/address' },
+  { icon: Bell, label: 'Notifications', path: '/notifications' },
+  { icon: Settings, label: 'Settings', path: '/profile/settings' },
   { icon: HelpCircle, label: 'Help & Support', path: '/profile' },
 ];
 
 export function ProfilePage() {
   const navigate = useNavigate();
-  const { user, logout } = useAuthStore();
+  const user = useAuthStore((s) => s.user);
+  const logout = useAuthStore((s) => s.logout);
+  const unread = useNotificationStore((s) => s.unreadCount());
   const isAdmin = user?.isAdmin;
 
   function handleLogout() {
@@ -37,19 +38,23 @@ export function ProfilePage() {
 
   return (
     <div>
-      <PageHeader title="Profile" showBack={false} />
+      <PageHeader title="Profile" />
 
       <div className="px-4 pb-8">
         <div className="mb-6 flex items-center gap-4 rounded-4xl bg-vt-gradient p-5 text-white shadow-elevated">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20 text-2xl font-bold">
-            {user?.name?.charAt(0) ?? 'V'}
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/20 text-2xl font-bold">
+            {user?.avatarUrl ? (
+              <img src={user.avatarUrl} alt="" className="h-full w-full object-cover" />
+            ) : (
+              (user?.name?.charAt(0) ?? 'V')
+            )}
           </div>
-          <div>
+          <div className="min-w-0">
             <h2 className="text-lg font-bold">{user?.name ?? 'Guest User'}</h2>
             <p className="text-sm text-white/80">{user?.mobile}</p>
-            <p className="text-sm text-white/70">{user?.email}</p>
+            <p className="truncate text-sm text-white/70">{user?.email}</p>
             {user?.address && (
-              <p className="mt-1 text-xs text-white/60 line-clamp-2">{user.address}</p>
+              <p className="mt-1 line-clamp-2 text-xs text-white/60">{user.address}</p>
             )}
           </div>
         </div>
@@ -81,6 +86,11 @@ export function ProfilePage() {
                 <item.icon className="h-5 w-5 text-vt-blue" />
               </div>
               <span className="flex-1 font-medium text-vt-dark">{item.label}</span>
+              {item.label === 'Notifications' && unread > 0 && (
+                <span className="rounded-full bg-red-500 px-2 py-0.5 text-xs font-bold text-white">
+                  {unread}
+                </span>
+              )}
               <ChevronRight className="h-5 w-5 text-slate-300" />
             </button>
           ))}

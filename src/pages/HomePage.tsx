@@ -1,5 +1,6 @@
-import { Bell, Grid3X3, Sparkles, Tag, TrendingUp } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Grid3X3, Sparkles, TrendingUp } from 'lucide-react';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { CategoryCard } from '../components/ecommerce/CategoryCard';
 import { HeroBanner } from '../components/ecommerce/HeroBanner';
@@ -14,41 +15,38 @@ const quickIcons = {
   grid: Grid3X3,
   sparkles: Sparkles,
   trending: TrendingUp,
-  tag: Tag,
 };
 
 export function HomePage() {
+  const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
+  const [search, setSearch] = useState('');
   const { data: categories = [], isLoading: loadingCategories } = useCategories();
   const { data: bestSellers = [], isLoading: loadingProducts } = useProducts({
     best_sellers: true,
   });
   const homeCategories = categories.slice(0, 6);
 
+  function handleSearch(query: string) {
+    if (!query) return;
+    navigate(`/search?q=${encodeURIComponent(query)}`);
+  }
+
   return (
     <div className="px-4 pb-4 pt-4">
-      <header className="mb-4 flex items-center justify-between">
-        <div>
-          <p className="text-sm text-slate-500">Good Morning,</p>
-          <h1 className="text-xl font-bold text-vt-dark">
-            {user?.name?.split(' ')[0] ?? 'Guest'} 👋
-          </h1>
-        </div>
-        <button
-          type="button"
-          className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-white shadow-card"
-        >
-          <Bell className="h-5 w-5 text-vt-dark" />
-          <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-vt-green" />
-        </button>
-      </header>
+      <div className="mb-4">
+        <p className="text-sm text-slate-500">Good Morning,</p>
+        <h1 className="text-xl font-bold text-vt-dark">
+          {user?.name?.split(' ')[0] ?? 'Guest'} 👋
+        </h1>
+      </div>
 
-      <SearchBar className="mb-5" />
+      <SearchBar className="mb-5" value={search} onChange={setSearch} onSearch={handleSearch} />
 
       <HeroBanner />
 
       <section className="mt-6">
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-3 gap-3">
           {quickActions.map((action) => {
             const Icon = quickIcons[action.icon as keyof typeof quickIcons];
             return (

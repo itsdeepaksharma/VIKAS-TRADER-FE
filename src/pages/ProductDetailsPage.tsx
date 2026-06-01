@@ -20,7 +20,6 @@ export function ProductDetailsPage() {
 
   const [selectedColor, setSelectedColor] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
-  const [imageIndex, setImageIndex] = useState(0);
 
   useEffect(() => {
     if (product) {
@@ -61,10 +60,10 @@ export function ProductDetailsPage() {
   }
 
   return (
-    <div className="pb-28">
+    <div className="flex min-h-0 flex-col">
       <PageHeader title="Product Details" />
 
-      <div className="px-4">
+      <div className="flex-1 px-4 pb-36">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -80,27 +79,12 @@ export function ProductDetailsPage() {
               className={cn('h-5 w-5', wished ? 'fill-red-500 text-red-500' : 'text-slate-400')}
             />
           </button>
-          <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1.5">
-            {[0, 1, 2].map((i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => setImageIndex(i)}
-                className={cn(
-                  'h-2 rounded-full transition-all',
-                  imageIndex === i ? 'w-6 bg-vt-blue' : 'w-2 bg-white/60',
-                )}
-              />
-            ))}
-          </div>
         </motion.div>
 
         <div className="mt-5">
           <h1 className="text-xl font-bold text-vt-dark">{product.name}</h1>
           <div className="mt-2 flex flex-wrap items-center gap-3">
-            <span className="text-2xl font-bold text-vt-blue">
-              {formatCurrency(product.price)}
-            </span>
+            <span className="text-2xl font-bold text-vt-blue">{formatCurrency(product.price)}</span>
             {product.originalPrice && (
               <>
                 <span className="text-slate-400 line-through">
@@ -124,9 +108,7 @@ export function ProductDetailsPage() {
                 product.inStock ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-600',
               )}
             >
-              {product.inStock
-                ? `In Stock${product.stockQuantity != null ? ` (${product.stockQuantity})` : ''}`
-                : 'Out of Stock'}
+              {product.inStock ? 'In Stock' : 'Out of Stock'}
             </span>
           </div>
 
@@ -184,7 +166,7 @@ export function ProductDetailsPage() {
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-100 bg-white p-4 shadow-[0_-8px_32px_rgba(0,0,0,0.08)]">
+      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-100 bg-white p-4 shadow-[0_-8px_32px_rgba(0,0,0,0.08)]">
         <div className="mx-auto flex max-w-lg gap-3">
           <GradientButton
             fullWidth
@@ -199,7 +181,7 @@ export function ProductDetailsPage() {
             className="flex-1 !bg-vt-dark"
             disabled={outOfStock}
             onClick={() => {
-              if (outOfStock) return;
+              if (outOfStock || !product) return;
               addItem(product, 1, { color: selectedColor, size: selectedSize });
               navigate('/checkout');
             }}

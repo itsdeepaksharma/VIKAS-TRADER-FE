@@ -33,12 +33,7 @@ export type CartItem = {
   selectedSize?: string;
 };
 
-export type OrderStatus =
-  | 'pending'
-  | 'processing'
-  | 'shipped'
-  | 'delivered'
-  | 'cancelled';
+export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
 
 export type OrderBuyer = {
   id: string;

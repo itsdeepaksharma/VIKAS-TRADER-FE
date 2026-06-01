@@ -46,11 +46,7 @@ export function ProductListingPage() {
         }
       />
       <div className="px-4 pb-4">
-        <FilterPills
-          filters={listingFilters}
-          active={activeFilter}
-          onChange={setActiveFilter}
-        />
+        <FilterPills filters={listingFilters} active={activeFilter} onChange={setActiveFilter} />
         <p className="my-3 text-sm text-slate-500">{filtered.length} products</p>
         {isLoading ? (
           <p className="py-12 text-center text-slate-500">Loading products...</p>

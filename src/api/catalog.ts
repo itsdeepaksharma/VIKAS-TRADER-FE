@@ -44,6 +44,8 @@ export async function fetchCategory(slug: string): Promise<ApiCategory> {
 export async function fetchProducts(params?: {
   category_slug?: string;
   best_sellers?: boolean;
+  q?: string;
+  newest?: boolean;
 }): Promise<ApiProduct[]> {
   const { data } = await apiClient.get<ApiProduct[]>('/catalog/products', { params });
   return data;

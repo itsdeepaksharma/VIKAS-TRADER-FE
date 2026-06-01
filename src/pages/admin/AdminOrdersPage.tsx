@@ -7,13 +7,7 @@ import { AdminOrderAccordionItem } from '../../components/admin/AdminOrderAccord
 import { mapAdminOrder } from '../../lib/catalogMappers';
 import type { OrderStatus } from '../../types/product';
 
-const statusOptions: OrderStatus[] = [
-  'pending',
-  'processing',
-  'shipped',
-  'delivered',
-  'cancelled',
-];
+const statusOptions: OrderStatus[] = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
 
 export function AdminOrdersPage() {
   const queryClient = useQueryClient();
@@ -64,9 +58,7 @@ export function AdminOrdersPage() {
     <div>
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-vt-dark">
-            {viewNew ? 'New Orders' : 'Orders'}
-          </h1>
+          <h1 className="text-2xl font-bold text-vt-dark">{viewNew ? 'New Orders' : 'Orders'}</h1>
           <p className="mt-1 text-sm text-slate-500">
             {viewNew
               ? `${displayedOrders.length} pending or processing`
@@ -111,9 +103,7 @@ export function AdminOrdersPage() {
               order={order}
               statusOptions={statusOptions}
               defaultOpen={index === 0}
-              onStatusChange={(orderId, status) =>
-                statusMutation.mutate({ orderId, status })
-              }
+              onStatusChange={(orderId, status) => statusMutation.mutate({ orderId, status })}
             />
           ))}
         </div>

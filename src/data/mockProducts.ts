@@ -15,16 +15,14 @@ export const products: Product[] = [
     originalPrice: 1199,
     rating: 4.7,
     reviewCount: 234,
-    image:
-      'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=600&fit=crop',
+    image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=600&fit=crop',
     categoryId: '3',
     categorySlug: 'containers',
     inStock: true,
     features: baseFeatures,
     colors: baseColors,
     sizes: ['1.5 L', '2.5 L', '5 L'],
-    description:
-      'Premium airtight storage containers perfect for kitchen and pantry organization.',
+    description: 'Premium airtight storage containers perfect for kitchen and pantry organization.',
     isBestSeller: true,
   },
   {
@@ -34,8 +32,7 @@ export const products: Product[] = [
     originalPrice: 449,
     rating: 4.5,
     reviewCount: 189,
-    image:
-      'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&h=600&fit=crop',
+    image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&h=600&fit=crop',
     categoryId: '1',
     categorySlug: 'buckets-mugs',
     inStock: true,
@@ -54,8 +51,7 @@ export const products: Product[] = [
     price: 299,
     rating: 4.6,
     reviewCount: 156,
-    image:
-      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=600&fit=crop',
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=600&fit=crop',
     categoryId: '2',
     categorySlug: 'baskets-organizers',
     inStock: true,
@@ -72,8 +68,7 @@ export const products: Product[] = [
     originalPrice: 699,
     rating: 4.8,
     reviewCount: 312,
-    image:
-      'https://images.unsplash.com/photo-1556909202-7a9a0f8b0f0f?w=600&h=600&fit=crop',
+    image: 'https://images.unsplash.com/photo-1556909202-7a9a0f8b0f0f?w=600&h=600&fit=crop',
     categoryId: '4',
     categorySlug: 'kitchenware',
     inStock: true,
@@ -89,8 +84,7 @@ export const products: Product[] = [
     price: 199,
     rating: 4.4,
     reviewCount: 98,
-    image:
-      'https://images.unsplash.com/photo-1595428774223-ef9bbecbb547?w=600&h=600&fit=crop',
+    image: 'https://images.unsplash.com/photo-1595428774223-ef9bbecbb547?w=600&h=600&fit=crop',
     categoryId: '3',
     categorySlug: 'containers',
     inStock: true,
@@ -105,8 +99,7 @@ export const products: Product[] = [
     price: 449,
     rating: 4.3,
     reviewCount: 87,
-    image:
-      'https://images.unsplash.com/photo-1563453392213-326a0a0c0f0f?w=600&h=600&fit=crop',
+    image: 'https://images.unsplash.com/photo-1563453392213-326a0a0c0f0f?w=600&h=600&fit=crop',
     categoryId: '5',
     categorySlug: 'cleaning-supplies',
     inStock: true,
@@ -121,8 +114,7 @@ export const products: Product[] = [
     price: 399,
     rating: 4.6,
     reviewCount: 145,
-    image:
-      'https://images.unsplash.com/photo-1585421514288-efb74c2b69bb?w=600&h=600&fit=crop',
+    image: 'https://images.unsplash.com/photo-1585421514288-efb74c2b69bb?w=600&h=600&fit=crop',
     categoryId: '7',
     categorySlug: 'storage',
     inStock: true,
@@ -138,8 +130,7 @@ export const products: Product[] = [
     originalPrice: 1599,
     rating: 4.9,
     reviewCount: 56,
-    image:
-      'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=600&h=600&fit=crop',
+    image: 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=600&h=600&fit=crop',
     categoryId: '8',
     categorySlug: 'wholesale',
     inStock: true,

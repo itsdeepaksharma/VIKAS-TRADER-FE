@@ -1,7 +1,16 @@
-import { FolderTree, LayoutDashboard, LogOut, Package, Shield, ShoppingBag, Store, Users } from 'lucide-react';
+import {
+  FolderTree,
+  LayoutDashboard,
+  LogOut,
+  Package,
+  Shield,
+  ShoppingBag,
+  Store,
+  Users,
+} from 'lucide-react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 
-import { VTLogo } from '../components/layout/VTLogo';
+import { AppBrandHeader } from '../components/layout/AppBrandHeader';
 import { useAuthStore } from '../store/authStore';
 import { cn } from '../lib/utils';
 
@@ -25,16 +34,10 @@ export function AdminLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className="min-h-screen bg-vt-beige-warm">
       <aside className="fixed inset-y-0 left-0 z-40 w-64 border-r border-slate-200 bg-white shadow-card">
         <div className="flex h-full flex-col p-5">
-          <div className="mb-6 flex items-center gap-3">
-            <VTLogo size="sm" />
-            <div>
-              <p className="text-sm font-bold text-vt-dark">Admin Panel</p>
-              <p className="text-xs text-slate-500">Vikas Traders</p>
-            </div>
-          </div>
+          <p className="mb-6 text-center text-sm font-bold text-vt-dark">Admin Panel</p>
 
           <div className="mb-6 rounded-2xl bg-vt-gradient p-4 text-white">
             <div className="flex items-center gap-2">
@@ -54,9 +57,7 @@ export function AdminLayout() {
                 className={({ isActive }) =>
                   cn(
                     'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors',
-                    isActive
-                      ? 'bg-vt-light-blue text-vt-blue'
-                      : 'text-slate-600 hover:bg-slate-50',
+                    isActive ? 'bg-vt-light-blue text-vt-blue' : 'text-slate-600 hover:bg-slate-50',
                   )
                 }
               >
@@ -77,8 +78,9 @@ export function AdminLayout() {
         </div>
       </aside>
 
-      <main className="ml-64 min-h-screen p-6">
-        <div className="mx-auto max-w-6xl">
+      <main className="ml-64 min-h-screen [--app-header-h:4.25rem]">
+        <AppBrandHeader homeTo="/admin" />
+        <div className="mx-auto max-w-6xl p-6">
           <Outlet />
         </div>
       </main>
