@@ -10,7 +10,7 @@ export function NewArrivalsPage() {
       <PageHeader title="New Arrivals" />
       <div className="px-4">
         {isLoading ? (
-          <p className="text-slate-500">Loading...</p>
+          <p className="text-vt-muted">Loading...</p>
         ) : (
           <div className="grid grid-cols-2 gap-4">
             {products.map((p) => (

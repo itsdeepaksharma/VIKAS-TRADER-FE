@@ -11,8 +11,8 @@ const buttonVariants = cva(
       variant: {
         default: 'bg-vt-gradient text-white shadow-soft hover:shadow-elevated hover:scale-[1.02]',
         secondary: 'bg-vt-light-blue text-vt-blue hover:bg-vt-light-mint',
-        outline: 'border-2 border-vt-blue/30 bg-white text-vt-dark hover:border-vt-blue',
-        ghost: 'text-vt-dark hover:bg-vt-light-blue',
+        outline: 'border-2 border-vt-blue/30 bg-vt-surface text-vt-foreground hover:border-vt-blue',
+        ghost: 'text-vt-foreground hover:bg-vt-light-blue',
         destructive: 'bg-red-500 text-white hover:bg-red-600',
       },
       size: {

@@ -34,7 +34,7 @@ export function ProfileAddressPage() {
     <div className="pb-8">
       <PageHeader title="Delivery Address" />
       <form onSubmit={handleSubmit} className="space-y-4 px-4">
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-vt-muted">
           This address is used when you place orders on Vikas Traders.
         </p>
         <textarea
@@ -42,7 +42,7 @@ export function ProfileAddressPage() {
           onChange={(e) => setAddress(e.target.value)}
           rows={4}
           required
-          className="w-full rounded-2xl border border-slate-200 p-4 text-sm focus:border-vt-blue focus:outline-none focus:ring-2 focus:ring-vt-blue/20"
+          className="w-full rounded-2xl border border-vt-border p-4 text-sm focus:border-vt-blue focus:outline-none focus:ring-2 focus:ring-vt-blue/20"
           placeholder="House no., street, city, pin code"
         />
         {error && <p className="text-sm text-red-500">{error}</p>}

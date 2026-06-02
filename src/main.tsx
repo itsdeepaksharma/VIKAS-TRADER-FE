@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { PwaProvider } from './components/pwa/PwaProvider';
+import { ThemeProvider } from './components/theme/ThemeProvider';
 import { AppRoutes } from './routes/AppRoutes';
 import './index.css';
 
@@ -22,8 +23,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <AppRoutes />
-          <PwaProvider />
+          <ThemeProvider>
+            <AppRoutes />
+            <PwaProvider />
+          </ThemeProvider>
         </BrowserRouter>
       </QueryClientProvider>
     </ErrorBoundary>

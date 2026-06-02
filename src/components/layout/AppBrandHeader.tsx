@@ -14,7 +14,7 @@ export function AppBrandHeader({ className, homeTo = '/', rightSlot }: AppBrandH
   return (
     <header
       className={cn(
-        'flex h-[4.25rem] shrink-0 items-center justify-between gap-3 border-b border-slate-200 bg-white px-4 shadow-sm',
+        'flex h-[4.25rem] shrink-0 items-center justify-between gap-3 border-b border-vt-border bg-vt-surface px-4 shadow-sm',
         className,
       )}
     >

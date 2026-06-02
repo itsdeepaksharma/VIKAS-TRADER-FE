@@ -31,8 +31,8 @@ export function StepIndicator({ currentStep }: StepIndicatorProps) {
                   isComplete
                     ? 'bg-vt-gradient text-white'
                     : isActive
-                      ? 'border-2 border-vt-blue bg-white text-vt-blue'
-                      : 'bg-slate-100 text-slate-400',
+                      ? 'border-2 border-vt-blue bg-vt-surface text-vt-blue'
+                      : 'bg-slate-100 text-vt-muted',
                 )}
               >
                 {isComplete ? <Check className="h-4 w-4" /> : index + 1}
@@ -44,7 +44,7 @@ export function StepIndicator({ currentStep }: StepIndicatorProps) {
             <span
               className={cn(
                 'mt-1 text-[10px] font-medium',
-                isActive || isComplete ? 'text-vt-blue' : 'text-slate-400',
+                isActive || isComplete ? 'text-vt-blue' : 'text-vt-muted',
               )}
             >
               {step}

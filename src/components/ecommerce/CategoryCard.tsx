@@ -15,7 +15,7 @@ export function CategoryCard({ category, variant = 'grid' }: CategoryCardProps) 
       <Link
         to={`/categories/${category.slug}`}
         className={cn(
-          'block overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-card transition-shadow hover:shadow-elevated',
+          'block overflow-hidden rounded-3xl border border-vt-border bg-vt-surface shadow-vt-card transition-shadow hover:shadow-elevated',
           variant === 'compact' ? 'p-3' : 'p-4',
         )}
       >
@@ -33,8 +33,8 @@ export function CategoryCard({ category, variant = 'grid' }: CategoryCardProps) 
             loading="lazy"
           />
         </div>
-        <h3 className="font-semibold text-vt-dark">{category.name}</h3>
-        <p className="mt-0.5 text-xs text-slate-500">{category.itemCount}+ Items</p>
+        <h3 className="font-semibold text-vt-foreground">{category.name}</h3>
+        <p className="mt-0.5 text-xs text-vt-muted">{category.itemCount}+ Items</p>
       </Link>
     </motion.div>
   );

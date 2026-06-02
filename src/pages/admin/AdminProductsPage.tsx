@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
+import { ChevronRight } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import {
@@ -10,10 +11,18 @@ import {
   updateProduct,
   type ProductPayload,
 } from '../../api/admin';
+import { getApiErrorMessage } from '../../api/client';
+import { AdminModal } from '../../components/admin/AdminModal';
+import { AdminModalFooter } from '../../components/admin/AdminModalFooter';
+import { ResponsiveTable } from '../../components/admin/ResponsiveTable';
+import { ImageUploadField } from '../../components/admin/ImageUploadField';
 import { GradientButton } from '../../components/ecommerce/GradientButton';
 import { Input } from '../../components/ui/input';
 import { mapCategory, mapProduct } from '../../lib/catalogMappers';
-import { formatCurrency } from '../../lib/utils';
+import { DEFAULT_PRODUCT_IMAGE } from '../../lib/imageUpload';
+import { isLowStock, isOutOfStock } from '../../lib/stockStatus';
+import { cn, formatCurrency } from '../../lib/utils';
+import type { Product } from '../../types/product';
 
 const emptyProduct: ProductPayload = {
   category_id: '',
@@ -29,14 +38,22 @@ const emptyProduct: ProductPayload = {
   is_active: true,
 };
 
-const LOW_STOCK_THRESHOLD = 5;
-
 export function AdminProductsPage() {
   const queryClient = useQueryClient();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const stockFilter = searchParams.get('stock');
+  const canAddProduct = !stockFilter;
+  const addSectionRef = useRef<HTMLDivElement>(null);
+
+  const [showAddPanel, setShowAddPanel] = useState(() => {
+    const add = searchParams.get('add');
+    return add === '1' || add === 'true';
+  });
   const [form, setForm] = useState<ProductPayload>(emptyProduct);
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [error, setError] = useState('');
+  const [modal, setModal] = useState<'edit' | 'delete' | null>(null);
+  const [selected, setSelected] = useState<Product | null>(null);
+  const [editForm, setEditForm] = useState<ProductPayload>(emptyProduct);
 
   const { data: categories = [] } = useQuery({
     queryKey: ['admin-categories'],
@@ -50,13 +67,10 @@ export function AdminProductsPage() {
 
   const filteredProducts = useMemo(() => {
     if (stockFilter === 'out') {
-      return products.filter((p) => !p.inStock || (p.stockQuantity ?? 0) <= 0);
+      return products.filter((p) => isOutOfStock(p.stockQuantity ?? 0));
     }
     if (stockFilter === 'low') {
-      return products.filter((p) => {
-        const qty = p.stockQuantity ?? 0;
-        return qty > 0 && qty <= LOW_STOCK_THRESHOLD;
-      });
+      return products.filter((p) => isLowStock(p.stockQuantity ?? 0));
     }
     return products;
   }, [products, stockFilter]);
@@ -64,147 +78,228 @@ export function AdminProductsPage() {
   const pageTitle =
     stockFilter === 'out' ? 'Out of Stock' : stockFilter === 'low' ? 'Low Stock' : 'Products';
 
-  const saveMutation = useMutation({
-    mutationFn: async () => {
-      if (editingId) return updateProduct(editingId, form);
-      return createProduct(form);
-    },
+  const invalidate = () => {
+    queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+    queryClient.invalidateQueries({ queryKey: ['products'] });
+    queryClient.invalidateQueries({ queryKey: ['admin-categories'] });
+    queryClient.invalidateQueries({ queryKey: ['categories'] });
+    queryClient.invalidateQueries({ queryKey: ['admin-dashboard'] });
+  };
+
+  const createMutation = useMutation({
+    mutationFn: () =>
+      createProduct({
+        ...form,
+        image: form.image || DEFAULT_PRODUCT_IMAGE,
+        description: form.description || form.name,
+      }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-products'] });
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+      invalidate();
       setForm(emptyProduct);
-      setEditingId(null);
+      setError('');
+      setShowAddPanel(false);
+      const next = new URLSearchParams(searchParams);
+      next.delete('add');
+      setSearchParams(next, { replace: true });
     },
+    onError: (err) => setError(getApiErrorMessage(err, 'Could not add product.')),
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: () =>
+      updateProduct(selected!.id, {
+        ...editForm,
+        image: editForm.image || DEFAULT_PRODUCT_IMAGE,
+      }),
+    onSuccess: () => {
+      invalidate();
+      closeModal();
+    },
+    onError: (err) => setError(getApiErrorMessage(err, 'Could not update product.')),
   });
 
   const deleteMutation = useMutation({
-    mutationFn: deleteProduct,
+    mutationFn: () => deleteProduct(selected!.id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-products'] });
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+      invalidate();
+      closeModal();
     },
+    onError: (err) => setError(getApiErrorMessage(err, 'Could not delete product.')),
   });
 
-  function startEdit(id: string) {
-    const p = products.find((x) => x.id === id);
-    if (!p) return;
-    setEditingId(id);
-    setForm({
-      category_id: p.categoryId,
-      name: p.name,
-      description: p.description,
-      price: p.price,
-      original_price: p.originalPrice ?? null,
-      image: p.image,
-      stock_quantity: p.stockQuantity ?? 0,
-      features: p.features,
-      colors: p.colors,
-      sizes: p.sizes,
-      is_best_seller: p.isBestSeller ?? false,
+  function openEdit(product: Product) {
+    setSelected(product);
+    setEditForm({
+      category_id: product.categoryId,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      original_price: product.originalPrice ?? null,
+      image: product.image,
+      stock_quantity: product.stockQuantity ?? 0,
+      features: product.features,
+      colors: product.colors,
+      sizes: product.sizes,
+      is_best_seller: product.isBestSeller ?? false,
       is_active: true,
     });
+    setError('');
+    setModal('edit');
+  }
+
+  function openDelete(product: Product) {
+    setSelected(product);
+    setError('');
+    setModal('delete');
+  }
+
+  function closeModal() {
+    setModal(null);
+    setSelected(null);
+    setError('');
+  }
+
+  const canSubmitAdd =
+    Boolean(form.category_id) && Boolean(form.name.trim()) && Number(form.price) > 0;
+
+  useEffect(() => {
+    const add = searchParams.get('add');
+    if (add === '1' || add === 'true') {
+      setShowAddPanel(true);
+    }
+  }, [searchParams]);
+
+  function openAddPanel() {
+    setShowAddPanel(true);
+    const next = new URLSearchParams(searchParams);
+    next.set('add', '1');
+    setSearchParams(next, { replace: true });
+    requestAnimationFrame(() => {
+      addSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
+  function closeAddPanel() {
+    setShowAddPanel(false);
+    const next = new URLSearchParams(searchParams);
+    next.delete('add');
+    setSearchParams(next, { replace: true });
   }
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-vt-dark">{pageTitle}</h1>
-        <p className="mt-1 text-sm text-slate-500">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="vt-page-title">{pageTitle}</h1>
+        <p className="vt-page-desc">
           {stockFilter
             ? `Showing ${filteredProducts.length} matching product(s)`
             : 'Manage inventory, pricing, and stock levels'}
         </p>
       </div>
 
-      <div className="mb-8 rounded-3xl border border-slate-100 bg-white p-6 shadow-card">
-        <h2 className="mb-4 font-semibold text-vt-dark">
-          {editingId ? 'Edit Product' : 'Add Product'}
-        </h2>
-        <div className="grid gap-3 sm:grid-cols-2">
-          <select
-            className="rounded-xl border border-slate-200 px-3 py-2 text-sm"
-            value={form.category_id}
-            onChange={(e) => setForm({ ...form, category_id: e.target.value })}
+      {canAddProduct && (
+        <div className="mb-4 flex items-center gap-2 border-b border-vt-border pb-4">
+          <button
+            type="button"
+            onClick={() => (showAddPanel ? closeAddPanel() : openAddPanel())}
+            className={cn(
+              'inline-flex items-center gap-2 rounded-full bg-vt-gradient px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition-all',
+              'hover:scale-[1.02] hover:shadow-elevated active:scale-[0.98]',
+              showAddPanel && 'ring-2 ring-vt-blue/40',
+            )}
+            aria-expanded={showAddPanel}
+            aria-controls="add-product-panel"
           >
-            <option value="">Select category</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-          <Input
-            placeholder="Product name"
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-          />
-          <Input
-            type="number"
-            placeholder="Price"
-            value={form.price || ''}
-            onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
-          />
-          <Input
-            type="number"
-            placeholder="Stock quantity"
-            value={form.stock_quantity ?? 0}
-            onChange={(e) => setForm({ ...form, stock_quantity: Number(e.target.value) })}
-          />
-          <Input
-            className="sm:col-span-2"
-            placeholder="Image URL"
-            value={form.image}
-            onChange={(e) => setForm({ ...form, image: e.target.value })}
-          />
-          <Input
-            className="sm:col-span-2"
-            placeholder="Description"
-            value={form.description}
-            onChange={(e) => setForm({ ...form, description: e.target.value })}
-          />
-          <label className="flex items-center gap-2 text-sm">
-            <input
-              type="checkbox"
-              checked={form.is_best_seller}
-              onChange={(e) => setForm({ ...form, is_best_seller: e.target.checked })}
+            Add Product
+            <ChevronRight
+              className={cn('h-4 w-4 transition-transform duration-200', showAddPanel && 'rotate-90')}
+              aria-hidden
             />
-            Best seller
-          </label>
+          </button>
         </div>
-        <div className="mt-4 flex gap-3">
-          <GradientButton
-            onClick={() => saveMutation.mutate()}
-            disabled={
-              saveMutation.isPending ||
-              !form.category_id ||
-              !form.name ||
-              !form.image ||
-              !form.price
-            }
-          >
-            {editingId ? 'Update Product' : 'Add Product'}
-          </GradientButton>
-          {editingId && (
+      )}
+
+      {canAddProduct && showAddPanel && (
+        <div
+          id="add-product-panel"
+          ref={addSectionRef}
+          className="vt-card-panel mb-6 sm:mb-8"
+        >
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <h2 className="font-semibold text-vt-foreground">Add Product</h2>
             <button
               type="button"
-              className="text-sm text-slate-500"
-              onClick={() => {
-                setEditingId(null);
-                setForm(emptyProduct);
-              }}
+              onClick={closeAddPanel}
+              className="text-sm font-medium text-vt-muted hover:text-vt-foreground"
             >
-              Cancel
+              Close
             </button>
-          )}
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <select
+              className="rounded-xl border border-vt-border px-3 py-2 text-sm"
+              value={form.category_id}
+              onChange={(e) => setForm({ ...form, category_id: e.target.value })}
+            >
+              <option value="">Select category</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+            <Input
+              placeholder="Product name"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+            />
+            <Input
+              type="number"
+              placeholder="Price"
+              value={form.price || ''}
+              onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
+            />
+            <Input
+              type="number"
+              placeholder="Stock quantity"
+              value={form.stock_quantity ?? 0}
+              onChange={(e) => setForm({ ...form, stock_quantity: Number(e.target.value) })}
+            />
+            <div className="sm:col-span-2">
+              <ImageUploadField value={form.image} onChange={(image) => setForm({ ...form, image })} />
+            </div>
+            <Input
+              className="sm:col-span-2"
+              placeholder="Description"
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+            />
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={form.is_best_seller}
+                onChange={(e) => setForm({ ...form, is_best_seller: e.target.checked })}
+              />
+              Best seller
+            </label>
+          </div>
+          {error && !modal && <p className="mt-3 text-sm text-red-500">{error}</p>}
+          <div className="mt-4">
+            <GradientButton
+              onClick={() => createMutation.mutate()}
+              disabled={createMutation.isPending || !canSubmitAdd}
+            >
+              {createMutation.isPending ? 'Adding…' : 'Add Product'}
+            </GradientButton>
+          </div>
         </div>
-      </div>
+      )}
 
       {isLoading ? (
-        <p className="text-slate-500">Loading...</p>
+        <p className="text-vt-muted">Loading...</p>
       ) : (
-        <div className="overflow-x-auto rounded-3xl border border-slate-100 bg-white shadow-card">
-          <table className="w-full min-w-[800px] text-left text-sm">
-            <thead className="border-b border-slate-100 bg-slate-50 text-slate-600">
+        <ResponsiveTable minWidth="720px">
+            <thead className="border-b border-vt-border bg-vt-surface-muted text-vt-muted">
               <tr>
                 <th className="px-4 py-3 font-semibold">Product</th>
                 <th className="px-4 py-3 font-semibold">Price</th>
@@ -215,36 +310,30 @@ export function AdminProductsPage() {
             </thead>
             <tbody>
               {filteredProducts.map((p) => (
-                <tr key={p.id} className="border-b border-slate-50">
+                <tr key={p.id} className="border-b border-vt-border">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <img src={p.image} alt="" className="h-10 w-10 rounded-lg object-cover" />
+                      <img
+                        src={p.image}
+                        alt=""
+                        className="h-10 w-10 rounded-lg object-cover bg-vt-surface-muted"
+                      />
                       <span className="font-medium">{p.name}</span>
                     </div>
                   </td>
                   <td className="px-4 py-3">{formatCurrency(p.price)}</td>
                   <td className="px-4 py-3">{p.stockQuantity ?? 0}</td>
                   <td className="px-4 py-3">
-                    <span className={p.inStock ? 'text-emerald-600' : 'font-semibold text-red-600'}>
+                    <span className={p.inStock ? 'text-vt-blue' : 'font-semibold text-red-600'}>
                       {p.inStock ? 'In stock' : 'Out of stock'}
                     </span>
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-2">
-                      <button
-                        type="button"
-                        className="text-vt-blue"
-                        onClick={() => startEdit(p.id)}
-                      >
+                      <button type="button" className="text-vt-blue" onClick={() => openEdit(p)}>
                         Edit
                       </button>
-                      <button
-                        type="button"
-                        className="text-red-600"
-                        onClick={() => {
-                          if (confirm(`Delete "${p.name}"?`)) deleteMutation.mutate(p.id);
-                        }}
-                      >
+                      <button type="button" className="text-red-600" onClick={() => openDelete(p)}>
                         Delete
                       </button>
                     </div>
@@ -252,9 +341,103 @@ export function AdminProductsPage() {
                 </tr>
               ))}
             </tbody>
-          </table>
-        </div>
+        </ResponsiveTable>
       )}
+
+      <AdminModal open={modal === 'edit'} title="Edit Product" onClose={closeModal}>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <select
+            className="rounded-xl border border-vt-border px-3 py-2 text-sm sm:col-span-2"
+            value={editForm.category_id}
+            onChange={(e) => setEditForm({ ...editForm, category_id: e.target.value })}
+          >
+            <option value="">Select category</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+          <Input
+            placeholder="Product name"
+            value={editForm.name}
+            onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+          />
+          <Input
+            type="number"
+            placeholder="Price"
+            value={editForm.price || ''}
+            onChange={(e) => setEditForm({ ...editForm, price: Number(e.target.value) })}
+          />
+          <Input
+            type="number"
+            placeholder="Stock"
+            value={editForm.stock_quantity ?? 0}
+            onChange={(e) =>
+              setEditForm({ ...editForm, stock_quantity: Number(e.target.value) })
+            }
+          />
+          <div className="sm:col-span-2">
+            <ImageUploadField
+              value={editForm.image}
+              onChange={(image) => setEditForm({ ...editForm, image })}
+            />
+          </div>
+          <Input
+            className="sm:col-span-2"
+            placeholder="Description"
+            value={editForm.description}
+            onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+          />
+          <label className="flex items-center gap-2 text-sm sm:col-span-2">
+            <input
+              type="checkbox"
+              checked={editForm.is_best_seller}
+              onChange={(e) => setEditForm({ ...editForm, is_best_seller: e.target.checked })}
+            />
+            Best seller
+          </label>
+        </div>
+        {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+        <AdminModalFooter>
+          <GradientButton
+            size="sm"
+            onClick={() => updateMutation.mutate()}
+            disabled={
+              updateMutation.isPending ||
+              !editForm.category_id ||
+              !editForm.name.trim() ||
+              !editForm.price
+            }
+          >
+            {updateMutation.isPending ? 'Saving…' : 'Save Changes'}
+          </GradientButton>
+        </AdminModalFooter>
+      </AdminModal>
+
+      <AdminModal open={modal === 'delete'} title="Delete Product" onClose={closeModal}>
+        <p className="text-sm text-vt-muted">
+          Delete <strong>{selected?.name}</strong>? This cannot be undone.
+        </p>
+        {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
+        <AdminModalFooter>
+          <GradientButton
+            size="sm"
+            onClick={() => deleteMutation.mutate()}
+            disabled={deleteMutation.isPending}
+            className="!from-red-500 !to-red-600"
+          >
+            {deleteMutation.isPending ? 'Deleting…' : 'Delete'}
+          </GradientButton>
+          <button
+            type="button"
+            className="min-h-9 rounded-xl px-5 py-2 text-sm font-medium text-vt-muted transition-colors hover:bg-vt-surface-hover hover:text-vt-foreground"
+            onClick={closeModal}
+          >
+            Cancel
+          </button>
+        </AdminModalFooter>
+      </AdminModal>
     </div>
   );
 }

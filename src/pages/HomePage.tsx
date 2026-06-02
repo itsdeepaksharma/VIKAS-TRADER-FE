@@ -33,10 +33,10 @@ export function HomePage() {
   }
 
   return (
-    <div className="px-4 pb-4 pt-4">
+    <div className="pb-4 pt-4">
       <div className="mb-4">
-        <p className="text-sm text-slate-500">Good Morning,</p>
-        <h1 className="text-xl font-bold text-vt-dark">
+        <p className="text-sm text-vt-muted">Good Morning,</p>
+        <h1 className="text-xl font-bold text-vt-foreground">
           {user?.name?.split(' ')[0] ?? 'Guest'} 👋
         </h1>
       </div>
@@ -46,19 +46,19 @@ export function HomePage() {
       <HeroBanner />
 
       <section className="mt-6">
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-2 sm:gap-3">
           {quickActions.map((action) => {
             const Icon = quickIcons[action.icon as keyof typeof quickIcons];
             return (
               <Link
                 key={action.id}
                 to={action.path}
-                className="flex flex-col items-center gap-2 rounded-2xl bg-white p-3 shadow-card transition-shadow hover:shadow-elevated"
+                className="flex flex-col items-center gap-2 rounded-2xl bg-vt-surface p-3 shadow-vt-card transition-shadow hover:shadow-elevated"
               >
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-vt-light-blue">
                   <Icon className="h-6 w-6 text-vt-blue" />
                 </div>
-                <span className="text-center text-[10px] font-semibold text-vt-dark">
+                <span className="text-center text-[10px] font-semibold text-vt-foreground">
                   {action.label}
                 </span>
               </Link>
@@ -70,7 +70,7 @@ export function HomePage() {
       <section className="mt-8">
         <SectionHeader title="Top Categories" actionTo="/categories" />
         {loadingCategories ? (
-          <p className="text-sm text-slate-500">Loading categories...</p>
+          <p className="text-sm text-vt-muted">Loading categories...</p>
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             {homeCategories.map((cat) => (
@@ -83,7 +83,7 @@ export function HomePage() {
       <section className="mt-8">
         <SectionHeader title="Best Sellers" actionTo="/categories/containers" />
         {loadingProducts ? (
-          <p className="text-sm text-slate-500">Loading products...</p>
+          <p className="text-sm text-vt-muted">Loading products...</p>
         ) : (
           <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2">
             {bestSellers.map((product) => (

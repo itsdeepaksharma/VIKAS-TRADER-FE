@@ -45,21 +45,21 @@ export function SignupPage() {
   }
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center px-6 py-10">
+    <div className="vt-container flex flex-1 flex-col items-center justify-center py-8 sm:py-10">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
-        className="glass-card w-full max-w-md p-8"
+        className="glass-card w-full max-w-md p-6 sm:p-8"
       >
-        <h1 className="text-2xl font-bold text-vt-dark">Create Account</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="text-2xl font-bold text-vt-foreground">Create Account</h1>
+        <p className="mt-1 text-sm text-vt-muted">
           Join Vikas Traders for wholesale & retail shopping
         </p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-vt-dark">First Name</label>
+              <label className="mb-1.5 block text-sm font-medium text-vt-foreground">First Name</label>
               <Input
                 placeholder="Deepak"
                 value={firstName}
@@ -68,7 +68,7 @@ export function SignupPage() {
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-vt-dark">Last Name</label>
+              <label className="mb-1.5 block text-sm font-medium text-vt-foreground">Last Name</label>
               <Input
                 placeholder="Sharma"
                 value={lastName}
@@ -79,7 +79,7 @@ export function SignupPage() {
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-vt-dark">Email</label>
+            <label className="mb-1.5 block text-sm font-medium text-vt-foreground">Email</label>
             <Input
               type="email"
               placeholder="you@example.com"
@@ -90,7 +90,7 @@ export function SignupPage() {
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-vt-dark">Phone Number</label>
+            <label className="mb-1.5 block text-sm font-medium text-vt-foreground">Phone Number</label>
             <Input
               type="tel"
               placeholder="9876543210"
@@ -102,7 +102,7 @@ export function SignupPage() {
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-vt-dark">Address</label>
+            <label className="mb-1.5 block text-sm font-medium text-vt-foreground">Address</label>
             <textarea
               placeholder="Street, city, state, PIN code"
               value={address}
@@ -110,12 +110,12 @@ export function SignupPage() {
               required
               minLength={5}
               rows={3}
-              className="flex w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-vt-dark shadow-sm focus:border-vt-blue focus:outline-none focus:ring-2 focus:ring-vt-blue/20"
+              className="flex w-full resize-none rounded-2xl border border-vt-border bg-vt-surface px-4 py-3 text-sm text-vt-foreground shadow-sm focus:border-vt-blue focus:outline-none focus:ring-2 focus:ring-vt-blue/20"
             />
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-vt-dark">Password</label>
+            <label className="mb-1.5 block text-sm font-medium text-vt-foreground">Password</label>
             <div className="relative">
               <Input
                 type={showPassword ? 'text' : 'password'}
@@ -129,7 +129,7 @@ export function SignupPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-vt-muted"
               >
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
@@ -143,7 +143,7 @@ export function SignupPage() {
           </GradientButton>
         </form>
 
-        <p className="mt-6 text-center text-sm text-slate-500">
+        <p className="mt-6 text-center text-sm text-vt-muted">
           Already have an account?{' '}
           <Link to="/login" className="font-semibold text-vt-blue hover:underline">
             Login

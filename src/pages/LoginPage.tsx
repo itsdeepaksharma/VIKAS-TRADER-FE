@@ -4,6 +4,7 @@ import { FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { GradientButton } from '../components/ecommerce/GradientButton';
+import { VTLogo } from '../components/layout/VTLogo';
 import { Checkbox } from '../components/ui/checkbox';
 import { Input } from '../components/ui/input';
 import { getApiErrorMessage } from '../api/client';
@@ -36,82 +37,90 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center px-6 py-12">
+    <div className="flex flex-1 flex-col items-center justify-center px-4 py-8 sm:py-12">
       <motion.div
-        initial={{ opacity: 0, y: 24 }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="glass-card w-full max-w-md p-8"
+        transition={{ duration: 0.35 }}
+        className="auth-card"
       >
-        <h1 className="text-2xl font-bold text-vt-dark">
-          Welcome Back! <span className="inline-block">👋</span>
-        </h1>
-        <p className="mt-1 text-sm text-slate-500">Sign in to Vikas Traders wholesale & retail</p>
-
-        <div className="mt-4 rounded-2xl border border-vt-blue/20 bg-vt-light-blue/50 p-4 text-sm">
-          <p className="font-semibold text-vt-dark">Admin demo login</p>
-          <p className="mt-1 text-slate-600">
-            Email: <span className="font-mono text-vt-blue">admin@vikastraders.com</span>
-          </p>
-          <p className="text-slate-600">
-            Password: <span className="font-mono text-vt-blue">VikasAdmin@2026</span>
-          </p>
+        <div className="mb-6 flex justify-center sm:mb-8">
+          <VTLogo size="auth" centered className="mx-auto" />
         </div>
+
+        <h1 className="text-center text-2xl font-bold text-vt-foreground sm:text-[1.65rem]">
+          Welcome Back! <span aria-hidden>👋</span>
+        </h1>
+        <p className="mt-2 text-center text-sm text-vt-muted">
+          Sign in to Vikas Traders wholesale &amp; retail
+        </p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-vt-dark">Email</label>
+            <label className="mb-2 block text-sm font-semibold text-vt-foreground">Email</label>
             <Input
               type="email"
               placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              className="auth-input"
+              autoComplete="email"
               required
             />
           </div>
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-vt-dark">Password</label>
+            <label className="mb-2 block text-sm font-semibold text-vt-foreground">Password</label>
             <div className="relative">
               <Input
                 type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="pr-12"
+                className="auth-input pr-12"
+                autoComplete="current-password"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-1 text-vt-muted transition-colors hover:text-vt-foreground"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
             </div>
           </div>
 
-          <div className="flex items-center justify-between">
-            <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-600">
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+            <label className="flex cursor-pointer items-center gap-2 text-sm text-vt-muted">
               <Checkbox checked={remember} onCheckedChange={(v) => setRemember(v === true)} />
               Remember Me
             </label>
             <Link
               to="/forgot-password"
-              className="text-sm font-medium text-vt-blue hover:underline"
+              className="text-sm font-semibold text-vt-cyan hover:underline dark:text-vt-blue"
             >
               Forgot Password?
             </Link>
           </div>
 
-          {error && <p className="text-sm text-red-500">{error}</p>}
+          {error && (
+            <p className="rounded-xl bg-red-50 px-3 py-2 text-sm text-red-600 dark:bg-red-950/40 dark:text-red-400">
+              {error}
+            </p>
+          )}
 
-          <GradientButton type="submit" fullWidth size="lg" disabled={loading}>
-            {loading ? 'Signing in...' : 'Login'}
+          <GradientButton type="submit" fullWidth size="lg" disabled={loading} className="mt-2">
+            {loading ? 'Signing in…' : 'Login'}
           </GradientButton>
         </form>
 
-        <p className="mt-6 text-center text-sm text-slate-500">
+        <p className="mt-6 text-center text-sm text-vt-muted">
           Don&apos;t have an account?{' '}
-          <Link to="/signup" className="font-semibold text-vt-blue hover:underline">
+          <Link
+            to="/signup"
+            className="font-semibold text-vt-cyan hover:underline dark:text-vt-blue"
+          >
             Sign Up
           </Link>
         </p>

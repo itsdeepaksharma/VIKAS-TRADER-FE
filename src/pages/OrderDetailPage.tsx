@@ -14,7 +14,7 @@ export function OrderDetailPage() {
     return (
       <div>
         <PageHeader title="Order Details" />
-        <p className="px-4 py-8 text-center text-slate-500">Loading...</p>
+        <p className="px-4 py-8 text-center text-vt-muted">Loading...</p>
       </div>
     );
   }
@@ -24,7 +24,7 @@ export function OrderDetailPage() {
       <div>
         <PageHeader title="Order Details" />
         <div className="px-4 py-12 text-center">
-          <p className="font-medium text-vt-dark">Order not found</p>
+          <p className="font-medium text-vt-foreground">Order not found</p>
           <Link to="/orders" className="mt-4 inline-block text-sm font-semibold text-vt-blue">
             Back to My Orders
           </Link>
@@ -37,11 +37,11 @@ export function OrderDetailPage() {
     <div className="pb-8">
       <PageHeader title="Order Details" />
       <div className="space-y-4 px-4">
-        <div className="rounded-3xl border border-slate-100 bg-white p-4 shadow-card">
+        <div className="rounded-3xl border border-vt-border bg-vt-surface p-4 shadow-vt-card">
           <div className="flex items-start justify-between">
             <div>
-              <p className="font-semibold text-vt-dark">#{order.id.slice(0, 8).toUpperCase()}</p>
-              <p className="text-xs text-slate-500">
+              <p className="font-semibold text-vt-foreground">#{order.id.slice(0, 8).toUpperCase()}</p>
+              <p className="text-xs text-vt-muted">
                 {new Date(order.date).toLocaleDateString('en-IN', {
                   day: 'numeric',
                   month: 'short',
@@ -54,15 +54,15 @@ export function OrderDetailPage() {
             <CustomerOrderBadge status={order.status} />
           </div>
           {order.shippingAddress && (
-            <p className="mt-3 text-sm text-slate-600">
-              <span className="font-medium text-vt-dark">Delivery: </span>
+            <p className="mt-3 text-sm text-vt-muted">
+              <span className="font-medium text-vt-foreground">Delivery: </span>
               {order.shippingAddress}
             </p>
           )}
         </div>
 
-        <div className="rounded-3xl border border-slate-100 bg-white p-4 shadow-card">
-          <h2 className="mb-3 font-semibold text-vt-dark">Items</h2>
+        <div className="rounded-3xl border border-vt-border bg-vt-surface p-4 shadow-vt-card">
+          <h2 className="mb-3 font-semibold text-vt-foreground">Items</h2>
           <ul className="space-y-3">
             {order.items.map((item) => (
               <li key={`${item.product.id}-${item.quantity}`} className="flex gap-3">
@@ -74,11 +74,11 @@ export function OrderDetailPage() {
                 <div className="min-w-0 flex-1">
                   <Link
                     to={`/products/${item.product.id}`}
-                    className="font-medium text-vt-dark hover:text-vt-blue"
+                    className="font-medium text-vt-foreground hover:text-vt-blue"
                   >
                     {item.product.name}
                   </Link>
-                  <p className="text-sm text-slate-500">Qty: {item.quantity}</p>
+                  <p className="text-sm text-vt-muted">Qty: {item.quantity}</p>
                   <p className="font-semibold text-vt-blue">
                     {formatCurrency(item.product.price * item.quantity)}
                   </p>
@@ -86,7 +86,7 @@ export function OrderDetailPage() {
               </li>
             ))}
           </ul>
-          <div className="mt-4 flex justify-between border-t border-slate-100 pt-3 text-lg font-bold text-vt-dark">
+          <div className="mt-4 flex justify-between border-t border-vt-border pt-3 text-lg font-bold text-vt-foreground">
             <span>Total</span>
             <span>{formatCurrency(order.total)}</span>
           </div>

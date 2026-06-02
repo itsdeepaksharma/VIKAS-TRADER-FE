@@ -3,7 +3,7 @@ import type { Product } from '../types/product';
 const baseFeatures = ['BPA Free', 'Food Grade', 'Air Tight', 'Durable'];
 const baseColors = [
   { id: 'blue', name: 'Blue', hex: '#00A3FF' },
-  { id: 'green', name: 'Green', hex: '#39FF6A' },
+  { id: 'cyan', name: 'Cyan', hex: '#00B4E6' },
   { id: 'white', name: 'White', hex: '#FFFFFF' },
 ];
 

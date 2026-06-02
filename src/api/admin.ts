@@ -25,9 +25,9 @@ import type { AdminDashboardStats, AdminUserListItem } from '../types/auth';
 import { apiClient } from './client';
 
 export type CategoryPayload = {
-  slug: string;
+  slug?: string;
   name: string;
-  image: string;
+  image?: string;
   bg_color?: string;
   sort_order?: number;
   is_active?: boolean;

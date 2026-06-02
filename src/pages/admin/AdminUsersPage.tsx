@@ -5,6 +5,7 @@ import { useSearchParams } from 'react-router-dom';
 
 import { getAdminUsers, updateUserStatus } from '../../api/admin';
 import { getApiErrorMessage } from '../../api/client';
+import { ResponsiveTable } from '../../components/admin/ResponsiveTable';
 import { Badge } from '../../components/ui/badge';
 
 export function AdminUsersPage() {
@@ -51,24 +52,22 @@ export function AdminUsersPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-vt-dark">{pageTitle}</h1>
-        <p className="mt-1 text-sm text-slate-500">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="vt-page-title">{pageTitle}</h1>
+        <p className="vt-page-desc">
           {userFilter
             ? `${filteredUsers.length} matching account(s)`
             : 'All registered customers and admins'}
         </p>
       </div>
 
-      {isLoading && <p className="text-slate-500">Loading users...</p>}
+      {isLoading && <p className="text-vt-muted">Loading users...</p>}
       {isError && (
         <p className="rounded-2xl bg-red-50 p-4 text-sm text-red-600">Failed to load users.</p>
       )}
 
-      <div className="overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-card">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[720px] text-left text-sm">
-            <thead className="border-b border-slate-100 bg-slate-50 text-slate-600">
+      <ResponsiveTable minWidth="680px">
+            <thead className="border-b border-vt-border bg-vt-surface-muted text-vt-muted">
               <tr>
                 <th className="px-4 py-3 font-semibold">Name</th>
                 <th className="px-4 py-3 font-semibold">Email</th>
@@ -81,11 +80,11 @@ export function AdminUsersPage() {
             <tbody>
               {filteredUsers.map((user) => (
                 <tr key={user.id} className="border-b border-slate-50 last:border-0">
-                  <td className="px-4 py-3 font-medium text-vt-dark">
+                  <td className="px-4 py-3 font-medium text-vt-foreground">
                     {user.first_name} {user.last_name}
                   </td>
-                  <td className="px-4 py-3 text-slate-600">{user.email}</td>
-                  <td className="px-4 py-3 text-slate-600">{user.phone}</td>
+                  <td className="px-4 py-3 text-vt-muted">{user.email}</td>
+                  <td className="px-4 py-3 text-vt-muted">{user.phone}</td>
                   <td className="px-4 py-3">
                     {user.is_superuser ? (
                       <Badge variant="default" className="gap-1">
@@ -120,9 +119,7 @@ export function AdminUsersPage() {
                 </tr>
               ))}
             </tbody>
-          </table>
-        </div>
-      </div>
+      </ResponsiveTable>
 
       {statusMutation.isError && (
         <p className="mt-4 text-sm text-red-500">

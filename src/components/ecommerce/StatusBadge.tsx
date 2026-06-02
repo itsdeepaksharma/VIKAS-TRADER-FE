@@ -5,10 +5,10 @@ const statusConfig: Record<
   OrderStatus,
   { label: string; variant: 'success' | 'shipped' | 'warning' | 'danger' }
 > = {
-  pending: { label: 'New Order', variant: 'warning' },
+  pending: { label: 'Pending', variant: 'warning' },
   delivered: { label: 'Delivered', variant: 'success' },
-  shipped: { label: 'Shipped', variant: 'shipped' },
-  processing: { label: 'Processing', variant: 'warning' },
+  shipped: { label: 'Confirmed', variant: 'shipped' },
+  processing: { label: 'Confirmed', variant: 'shipped' },
   cancelled: { label: 'Cancelled', variant: 'danger' },
 };
 

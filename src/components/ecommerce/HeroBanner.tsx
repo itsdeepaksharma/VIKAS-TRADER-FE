@@ -51,7 +51,7 @@ export function HeroBanner() {
           <p className="mt-1 text-xl font-bold">{formatCurrency(product.price)}</p>
           <Link
             to={`/products/${product.id}`}
-            className="mt-3 inline-flex h-10 items-center justify-center gap-1 rounded-2xl bg-white px-4 text-sm font-bold text-vt-dark shadow-lg ring-2 ring-white/50"
+            className="mt-3 inline-flex h-10 items-center justify-center gap-1 rounded-2xl bg-vt-surface px-4 text-sm font-bold text-vt-foreground shadow-lg ring-2 ring-white/50"
           >
             View Product <ArrowRight className="h-4 w-4" />
           </Link>

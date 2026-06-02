@@ -19,8 +19,8 @@ export function NotificationsPage() {
         {items.length === 0 ? (
           <div className="flex flex-col items-center py-16 text-center">
             <Bell className="h-12 w-12 text-slate-200" />
-            <p className="mt-4 font-medium text-vt-dark">No notifications yet</p>
-            <p className="text-sm text-slate-500">
+            <p className="mt-4 font-medium text-vt-foreground">No notifications yet</p>
+            <p className="text-sm text-vt-muted">
               You will be notified when an order is confirmed or cancelled.
             </p>
           </div>
@@ -28,13 +28,13 @@ export function NotificationsPage() {
           items.map((n) => (
             <div
               key={n.id}
-              className={`rounded-2xl border p-4 shadow-card ${
-                n.read ? 'border-slate-100 bg-white' : 'border-vt-blue/30 bg-vt-light-blue/30'
+              className={`rounded-2xl border p-4 shadow-vt-card ${
+                n.read ? 'border-vt-border bg-vt-surface' : 'border-vt-blue/30 bg-vt-light-blue/30'
               }`}
             >
-              <p className="font-semibold text-vt-dark">{n.title}</p>
-              <p className="mt-1 text-sm text-slate-600">{n.message}</p>
-              <p className="mt-2 text-xs text-slate-400">
+              <p className="font-semibold text-vt-foreground">{n.title}</p>
+              <p className="mt-1 text-sm text-vt-muted">{n.message}</p>
+              <p className="mt-2 text-xs text-vt-muted">
                 {new Date(n.createdAt).toLocaleString('en-IN')}
               </p>
             </div>

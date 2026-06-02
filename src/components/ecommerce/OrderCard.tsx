@@ -11,11 +11,11 @@ type OrderCardProps = {
 
 export function OrderCard({ order }: OrderCardProps) {
   return (
-    <div className="rounded-3xl border border-slate-100 bg-white p-4 shadow-card">
+    <div className="rounded-3xl border border-vt-border bg-vt-surface p-4 shadow-vt-card">
       <div className="flex items-start justify-between">
         <div>
-          <p className="font-semibold text-vt-dark">#{order.id.slice(0, 8).toUpperCase()}</p>
-          <p className="text-xs text-slate-500">
+          <p className="font-semibold text-vt-foreground">#{order.id.slice(0, 8).toUpperCase()}</p>
+          <p className="text-xs text-vt-muted">
             {new Date(order.date).toLocaleDateString('en-IN', {
               day: 'numeric',
               month: 'short',
@@ -39,13 +39,13 @@ export function OrderCard({ order }: OrderCardProps) {
           />
         ))}
         {order.items.length > 3 && (
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-xs font-medium text-slate-600">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-xs font-medium text-vt-muted">
             +{order.items.length - 3}
           </div>
         )}
       </div>
-      <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-3">
-        <span className="font-bold text-vt-dark">{formatCurrency(order.total)}</span>
+      <div className="mt-3 flex items-center justify-between border-t border-vt-border pt-3">
+        <span className="font-bold text-vt-foreground">{formatCurrency(order.total)}</span>
         <Link
           to={`/orders/${order.id}`}
           className="flex items-center gap-1 text-sm font-semibold text-vt-blue hover:underline"
