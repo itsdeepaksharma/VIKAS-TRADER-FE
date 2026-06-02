@@ -16,14 +16,14 @@ export function MainLayout() {
   useOrderNotifications();
 
   return (
-    <div className="flex h-[100dvh] flex-col overflow-hidden bg-vt-beige-light">
+    <div className="flex h-[100dvh] flex-col overflow-hidden bg-vt-page">
       <AppBrandHeader rightSlot={isHome ? <NotificationBellMenu /> : undefined} />
       <AnimatePresence mode="wait">
         <PageTransition key={location.pathname} className="flex min-h-0 flex-1 flex-col">
           <main
             className={`min-h-0 flex-1 overflow-y-auto overscroll-contain ${showNav ? 'pb-24' : 'pb-4'}`}
           >
-            <div className="mx-auto w-full max-w-lg md:max-w-2xl lg:max-w-4xl">
+            <div className="vt-container min-w-0">
               <Outlet />
             </div>
           </main>

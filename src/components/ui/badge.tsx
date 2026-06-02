@@ -6,11 +6,11 @@ import { cn } from '../../lib/utils';
 const badgeVariants = cva('inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold', {
   variants: {
     variant: {
-      default: 'bg-vt-light-blue text-vt-blue',
-      success: 'bg-emerald-100 text-emerald-700',
-      warning: 'bg-amber-100 text-amber-700',
-      danger: 'bg-red-100 text-red-600',
-      shipped: 'bg-sky-100 text-sky-700',
+      default: 'bg-vt-light-blue text-vt-cyan-dark dark:text-vt-cyan',
+      success: 'bg-vt-light-blue text-vt-cyan-dark dark:text-vt-cyan',
+      warning: 'bg-vt-light-blue text-vt-navy dark:text-vt-mint',
+      danger: 'bg-red-100 text-red-600 dark:bg-red-950 dark:text-red-400',
+      shipped: 'bg-vt-mint-light/60 text-vt-navy dark:bg-vt-surface-muted dark:text-vt-mint',
       discount: 'bg-vt-gradient text-white',
     },
   },

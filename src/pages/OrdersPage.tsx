@@ -23,7 +23,7 @@ export function OrdersPage() {
     <div>
       <PageHeader title="My Orders" />
       <div className="px-4 pb-4">
-        {isLoading && <p className="py-8 text-center text-slate-500">Loading orders...</p>}
+        {isLoading && <p className="py-8 text-center text-vt-muted">Loading orders...</p>}
         {isError && (
           <p className="rounded-2xl bg-red-50 p-4 text-sm text-red-600">Failed to load orders.</p>
         )}
@@ -44,7 +44,7 @@ export function OrdersPage() {
                     <OrderCard key={order.id} order={order} />
                   ))}
                   {list.length === 0 && (
-                    <p className="py-8 text-center text-slate-500">No orders in this tab.</p>
+                    <p className="py-8 text-center text-vt-muted">No orders in this tab.</p>
                   )}
                 </TabsContent>
               );

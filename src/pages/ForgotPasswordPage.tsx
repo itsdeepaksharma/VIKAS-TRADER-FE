@@ -43,10 +43,10 @@ export function ForgotPasswordPage() {
   }
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center px-6 py-12">
-      <div className="glass-card w-full max-w-md p-8">
-        <h1 className="text-2xl font-bold text-vt-dark">Forgot Password</h1>
-        <p className="mt-1 text-sm text-slate-500">
+    <div className="vt-container flex flex-1 flex-col items-center justify-center py-8 sm:py-12">
+      <div className="glass-card w-full max-w-md p-6 sm:p-8">
+        <h1 className="text-2xl font-bold text-vt-foreground">Forgot Password</h1>
+        <p className="mt-1 text-sm text-vt-muted">
           {step === 'email'
             ? 'Enter your registered email to continue.'
             : 'Set a new password for your account.'}

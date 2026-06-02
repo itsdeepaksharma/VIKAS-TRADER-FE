@@ -1,38 +1,29 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { getAdminOrders, updateOrderStatus } from '../../api/admin';
 import { AdminOrderAccordionItem } from '../../components/admin/AdminOrderAccordionItem';
 import { mapAdminOrder } from '../../lib/catalogMappers';
-import type { OrderStatus } from '../../types/product';
-
-const statusOptions: OrderStatus[] = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
-
+import { ADMIN_ORDER_FILTER_OPTIONS } from '../../lib/adminOrderStatus';
+import { isConfirmedOrder } from '../../lib/orderStatus';
 export function AdminOrdersPage() {
   const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
-  const viewNew = searchParams.get('view') === 'new';
-  const statusParam = searchParams.get('status') ?? '';
-  const [filter, setFilter] = useState(viewNew ? '' : statusParam);
-
-  useEffect(() => {
-    if (viewNew) {
-      setFilter('');
-      return;
-    }
-    setFilter(statusParam);
-  }, [viewNew, statusParam]);
+  const [filter, setFilter] = useState(searchParams.get('status') ?? '');
 
   const { data: orders = [], isLoading } = useQuery({
-    queryKey: ['admin-orders', filter, viewNew],
-    queryFn: async () => (await getAdminOrders(filter || undefined)).map(mapAdminOrder),
+    queryKey: ['admin-orders'],
+    queryFn: async () => (await getAdminOrders()).map(mapAdminOrder),
   });
 
   const displayedOrders = useMemo(() => {
-    if (!viewNew) return orders;
-    return orders.filter((o) => o.status === 'pending' || o.status === 'processing');
-  }, [orders, viewNew]);
+    if (!filter) return orders;
+    if (filter === 'confirmed') {
+      return orders.filter((o) => isConfirmedOrder(o.status));
+    }
+    return orders.filter((o) => o.status === filter);
+  }, [orders, filter]);
 
   function handleFilterChange(value: string) {
     setFilter(value);
@@ -52,48 +43,36 @@ export function AdminOrdersPage() {
     },
   });
 
-  const newOrders = orders.filter((o) => o.status === 'pending' || o.status === 'processing');
+  const pendingCount = orders.filter((o) => o.status === 'pending').length;
 
   return (
     <div>
-      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-vt-dark">{viewNew ? 'New Orders' : 'Orders'}</h1>
-          <p className="mt-1 text-sm text-slate-500">
-            {viewNew
-              ? `${displayedOrders.length} pending or processing`
-              : `${newOrders.length} active · ${displayedOrders.length} shown`}
-            {' · '}
-            <span className="text-slate-400">Click a row to expand details</span>
+      <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="vt-page-title">Orders</h1>
+          <p className="vt-page-desc">
+            {pendingCount} pending · {displayedOrders.length} shown · Accept (Confirmed) or mark
+            Delivered / Cancelled
           </p>
         </div>
         <select
-          className="rounded-xl border border-slate-200 px-3 py-2 text-sm"
-          value={viewNew ? 'new' : filter}
-          onChange={(e) => {
-            const v = e.target.value;
-            if (v === 'new') {
-              setSearchParams({ view: 'new' });
-            } else {
-              handleFilterChange(v);
-            }
-          }}
+          className="w-full rounded-xl border border-vt-border bg-vt-surface px-3 py-2 text-sm sm:w-auto"
+          value={filter}
+          onChange={(e) => handleFilterChange(e.target.value)}
         >
-          <option value="new">New orders (pending + processing)</option>
-          <option value="">All orders</option>
-          <option value="pending">Pending only</option>
-          <option value="processing">Processing</option>
-          <option value="shipped">Shipped</option>
-          <option value="delivered">Delivered</option>
-          <option value="cancelled">Cancelled</option>
+          {ADMIN_ORDER_FILTER_OPTIONS.map((opt) => (
+            <option key={opt.value || 'all'} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
         </select>
       </div>
 
       {isLoading ? (
-        <p className="text-slate-500">Loading orders...</p>
+        <p className="text-vt-muted">Loading orders...</p>
       ) : displayedOrders.length === 0 ? (
-        <p className="rounded-3xl bg-white p-8 text-center text-slate-500 shadow-card">
-          No orders yet.
+        <p className="rounded-3xl bg-vt-surface p-8 text-center text-vt-muted shadow-vt-card">
+          No orders match this filter.
         </p>
       ) : (
         <div className="space-y-2">
@@ -101,7 +80,6 @@ export function AdminOrdersPage() {
             <AdminOrderAccordionItem
               key={order.id}
               order={order}
-              statusOptions={statusOptions}
               defaultOpen={index === 0}
               onStatusChange={(orderId, status) => statusMutation.mutate({ orderId, status })}
             />

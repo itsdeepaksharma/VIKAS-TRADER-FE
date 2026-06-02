@@ -23,7 +23,7 @@ export function CategoriesPage() {
           onSearch={(q) => navigate(`/search?q=${encodeURIComponent(q)}`)}
         />
         {isLoading ? (
-          <p className="py-8 text-center text-slate-500">Loading categories...</p>
+          <p className="py-8 text-center text-vt-muted">Loading categories...</p>
         ) : (
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
             {categories.map((category) => (

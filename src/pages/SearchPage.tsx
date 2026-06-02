@@ -13,9 +13,9 @@ export function SearchPage() {
     <div className="pb-6">
       <PageHeader title={query ? `Results for "${query}"` : 'Search'} />
       <div className="px-4">
-        {isLoading && <p className="text-slate-500">Searching...</p>}
+        {isLoading && <p className="text-vt-muted">Searching...</p>}
         {!isLoading && products.length === 0 && (
-          <p className="py-12 text-center text-slate-500">No products found.</p>
+          <p className="py-12 text-center text-vt-muted">No products found.</p>
         )}
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
           {products.map((product) => (

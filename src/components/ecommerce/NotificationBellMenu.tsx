@@ -42,11 +42,11 @@ export function NotificationBellMenu({ className }: NotificationBellMenuProps) {
       <button
         type="button"
         onClick={toggleOpen}
-        className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-white shadow-card"
+        className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-vt-surface shadow-vt-card"
         aria-label="Notifications"
         aria-expanded={open}
       >
-        <Bell className="h-5 w-5 text-vt-dark" />
+        <Bell className="h-5 w-5 text-vt-foreground" />
         {unread > 0 && (
           <span className="absolute right-2 top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
             {unread > 9 ? '9+' : unread}
@@ -55,13 +55,13 @@ export function NotificationBellMenu({ className }: NotificationBellMenuProps) {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-2 w-[min(100vw-2rem,22rem)] overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-elevated">
-          <div className="border-b border-slate-100 px-4 py-3">
-            <p className="font-semibold text-vt-dark">Notifications</p>
+        <div className="absolute right-0 top-full z-50 mt-2 w-[min(100vw-2rem,22rem)] overflow-hidden rounded-2xl border border-vt-border bg-vt-surface shadow-elevated">
+          <div className="border-b border-vt-border px-4 py-3">
+            <p className="font-semibold text-vt-foreground">Notifications</p>
           </div>
           <div className="max-h-80 overflow-y-auto">
             {preview.length === 0 ? (
-              <p className="px-4 py-6 text-center text-sm text-slate-500">No notifications yet</p>
+              <p className="px-4 py-6 text-center text-sm text-vt-muted">No notifications yet</p>
             ) : (
               preview.map((n) => (
                 <div
@@ -71,9 +71,9 @@ export function NotificationBellMenu({ className }: NotificationBellMenuProps) {
                     !n.read && 'bg-vt-light-blue/30',
                   )}
                 >
-                  <p className="text-sm font-semibold text-vt-dark">{n.title}</p>
-                  <p className="mt-0.5 line-clamp-2 text-xs text-slate-600">{n.message}</p>
-                  <p className="mt-1 text-[10px] text-slate-400">
+                  <p className="text-sm font-semibold text-vt-foreground">{n.title}</p>
+                  <p className="mt-0.5 line-clamp-2 text-xs text-vt-muted">{n.message}</p>
+                  <p className="mt-1 text-[10px] text-vt-muted">
                     {new Date(n.createdAt).toLocaleString('en-IN')}
                   </p>
                 </div>
@@ -87,7 +87,7 @@ export function NotificationBellMenu({ className }: NotificationBellMenuProps) {
                 setOpen(false);
                 navigate('/notifications');
               }}
-              className="w-full border-t border-slate-100 py-3 text-center text-sm font-semibold text-vt-blue hover:bg-slate-50"
+              className="w-full border-t border-vt-border py-3 text-center text-sm font-semibold text-vt-blue hover:bg-vt-surface-muted"
             >
               Load more ({items.length - PREVIEW_LIMIT} more)
             </button>
@@ -95,7 +95,7 @@ export function NotificationBellMenu({ className }: NotificationBellMenuProps) {
           <Link
             to="/notifications"
             onClick={() => setOpen(false)}
-            className="block border-t border-slate-100 py-3 text-center text-sm font-medium text-slate-600 hover:bg-slate-50"
+            className="block border-t border-vt-border py-3 text-center text-sm font-medium text-vt-muted hover:bg-vt-surface-muted"
           >
             View all notifications
           </Link>

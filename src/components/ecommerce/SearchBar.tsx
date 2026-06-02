@@ -71,7 +71,7 @@ export function SearchBar({
           onFocus={() => setFocused(true)}
           placeholder={placeholder}
           autoComplete="off"
-          className="h-12 w-full rounded-2xl border border-slate-200 bg-white pl-4 pr-14 text-sm shadow-sm transition-shadow focus:border-vt-blue focus:outline-none focus:ring-2 focus:ring-vt-blue/20"
+          className="h-12 w-full rounded-2xl border border-vt-border bg-vt-surface pl-4 pr-14 text-sm shadow-sm transition-shadow focus:border-vt-blue focus:outline-none focus:ring-2 focus:ring-vt-blue/20"
         />
         <button
           type="submit"
@@ -83,15 +83,15 @@ export function SearchBar({
       </form>
 
       {showDropdown && (
-        <div className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-elevated">
+        <div className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-2xl border border-vt-border bg-vt-surface shadow-elevated">
           {isFetching && (
-            <div className="flex items-center gap-2 px-4 py-3 text-sm text-slate-500">
+            <div className="flex items-center gap-2 px-4 py-3 text-sm text-vt-muted">
               <Loader2 className="h-4 w-4 animate-spin" />
               Searching...
             </div>
           )}
           {!isFetching && suggestions.length === 0 && (
-            <p className="px-4 py-3 text-sm text-slate-500">No products found</p>
+            <p className="px-4 py-3 text-sm text-vt-muted">No products found</p>
           )}
           {!isFetching &&
             suggestions.slice(0, 8).map((product) => (
@@ -99,7 +99,7 @@ export function SearchBar({
                 key={product.id}
                 to={`/products/${product.id}`}
                 onClick={() => setFocused(false)}
-                className="flex items-center gap-3 border-b border-slate-50 px-3 py-2.5 last:border-0 hover:bg-slate-50"
+                className="flex items-center gap-3 border-b border-slate-50 px-3 py-2.5 last:border-0 hover:bg-vt-surface-muted"
               >
                 <img
                   src={product.image}
@@ -107,7 +107,7 @@ export function SearchBar({
                   className="h-11 w-11 shrink-0 rounded-xl object-cover bg-slate-100"
                 />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-vt-dark">{product.name}</p>
+                  <p className="truncate text-sm font-medium text-vt-foreground">{product.name}</p>
                   <p className="text-xs font-semibold text-vt-blue">
                     {formatCurrency(product.price)}
                     {!product.inStock && <span className="ml-2 text-red-500">Out of stock</span>}
@@ -119,7 +119,7 @@ export function SearchBar({
             <button
               type="button"
               onClick={() => goToSearch(debouncedQ)}
-              className="w-full py-2.5 text-center text-sm font-semibold text-vt-blue hover:bg-slate-50"
+              className="w-full py-2.5 text-center text-sm font-semibold text-vt-blue hover:bg-vt-surface-muted"
             >
               See all results for &quot;{debouncedQ}&quot;
             </button>

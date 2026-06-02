@@ -22,7 +22,7 @@ export function ProductCard({ product, layout = 'grid' }: ProductCardProps) {
     return (
       <motion.div
         whileHover={{ scale: 1.02 }}
-        className="min-w-[160px] flex-shrink-0 overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-card"
+        className="min-w-[160px] flex-shrink-0 overflow-hidden rounded-3xl border border-vt-border bg-vt-surface shadow-vt-card"
       >
         <Link to={`/products/${product.id}`}>
           <div className="relative h-36 bg-vt-light-blue">
@@ -33,15 +33,15 @@ export function ProductCard({ product, layout = 'grid' }: ProductCardProps) {
                 e.preventDefault();
                 toggle(product);
               }}
-              className="absolute right-2 top-2 rounded-full bg-white/90 p-1.5 shadow-sm"
+              className="absolute right-2 top-2 rounded-full bg-vt-surface/90 p-1.5 shadow-sm"
             >
               <Heart
-                className={cn('h-4 w-4', wished ? 'fill-red-500 text-red-500' : 'text-slate-400')}
+                className={cn('h-4 w-4', wished ? 'fill-red-500 text-red-500' : 'text-vt-muted')}
               />
             </button>
           </div>
           <div className="p-3">
-            <h3 className="line-clamp-2 text-sm font-semibold text-vt-dark">{product.name}</h3>
+            <h3 className="line-clamp-2 text-sm font-semibold text-vt-foreground">{product.name}</h3>
             <div className="mt-1 flex items-center gap-1 text-xs text-amber-500">
               <Star className="h-3 w-3 fill-current" />
               <span>{product.rating}</span>
@@ -56,7 +56,7 @@ export function ProductCard({ product, layout = 'grid' }: ProductCardProps) {
   return (
     <motion.div
       whileHover={{ scale: 1.03, y: -4 }}
-      className="overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-card transition-shadow hover:shadow-elevated"
+      className="overflow-hidden rounded-3xl border border-vt-border bg-vt-surface shadow-vt-card transition-shadow hover:shadow-elevated"
     >
       <Link to={`/products/${product.id}`} className="block">
         <div className="relative aspect-square bg-vt-light-mint">
@@ -67,10 +67,10 @@ export function ProductCard({ product, layout = 'grid' }: ProductCardProps) {
               e.preventDefault();
               toggle(product);
             }}
-            className="absolute right-2 top-2 rounded-full bg-white p-2 shadow-sm"
+            className="absolute right-2 top-2 rounded-full bg-vt-surface p-2 shadow-sm"
           >
             <Heart
-              className={cn('h-4 w-4', wished ? 'fill-red-500 text-red-500' : 'text-slate-400')}
+              className={cn('h-4 w-4', wished ? 'fill-red-500 text-red-500' : 'text-vt-muted')}
             />
           </button>
           {outOfStock && (
@@ -85,19 +85,19 @@ export function ProductCard({ product, layout = 'grid' }: ProductCardProps) {
           )}
         </div>
         <div className="p-3">
-          <h3 className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold text-vt-dark">
+          <h3 className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold text-vt-foreground">
             {product.name}
           </h3>
           <div className="mt-1 flex items-center gap-1 text-xs text-amber-500">
             <Star className="h-3.5 w-3.5 fill-current" />
             <span className="font-medium">{product.rating}</span>
-            <span className="text-slate-400">({product.reviewCount})</span>
+            <span className="text-vt-muted">({product.reviewCount})</span>
           </div>
           <div className="mt-2 flex items-center justify-between">
             <div>
-              <span className="font-bold text-vt-dark">{formatCurrency(product.price)}</span>
+              <span className="font-bold text-vt-foreground">{formatCurrency(product.price)}</span>
               {product.originalPrice && (
-                <span className="ml-1 text-xs text-slate-400 line-through">
+                <span className="ml-1 text-xs text-vt-muted line-through">
                   {formatCurrency(product.originalPrice)}
                 </span>
               )}
@@ -113,7 +113,7 @@ export function ProductCard({ product, layout = 'grid' }: ProductCardProps) {
           className={cn(
             'flex w-full items-center justify-center gap-2 rounded-xl py-2 text-sm font-semibold transition-colors',
             outOfStock
-              ? 'cursor-not-allowed bg-slate-100 text-slate-400'
+              ? 'cursor-not-allowed bg-slate-100 text-vt-muted'
               : 'bg-vt-light-blue text-vt-blue hover:bg-vt-gradient hover:text-white',
           )}
         >

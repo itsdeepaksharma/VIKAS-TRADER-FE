@@ -16,7 +16,7 @@ export function CheckoutCard({ subtotal, shipping = 49 }: CheckoutCardProps) {
       <Card>
         <CardContent>
           <div className="mb-2 flex items-center justify-between">
-            <h3 className="font-semibold text-vt-dark">Shipping Address</h3>
+            <h3 className="font-semibold text-vt-foreground">Shipping Address</h3>
             <button type="button" className="text-sm font-medium text-vt-blue">
               Change
             </button>
@@ -26,32 +26,32 @@ export function CheckoutCard({ subtotal, shipping = 49 }: CheckoutCardProps) {
               <MapPin className="h-5 w-5 text-vt-blue" />
             </div>
             <div>
-              <p className="font-medium text-vt-dark">Deepak Sharma</p>
-              <p className="text-sm text-slate-500">
+              <p className="font-medium text-vt-foreground">Deepak Sharma</p>
+              <p className="text-sm text-vt-muted">
                 42, Industrial Area, Phase 2
                 <br />
                 Ludhiana, Punjab — 141003
               </p>
-              <p className="mt-1 text-sm text-slate-500">+91 98765 43210</p>
+              <p className="mt-1 text-sm text-vt-muted">+91 98765 43210</p>
             </div>
-            <Pencil className="ml-auto h-4 w-4 text-slate-400" />
+            <Pencil className="ml-auto h-4 w-4 text-vt-muted" />
           </div>
         </CardContent>
       </Card>
 
       <Card>
         <CardContent>
-          <h3 className="mb-3 font-semibold text-vt-dark">Order Summary</h3>
+          <h3 className="mb-3 font-semibold text-vt-foreground">Order Summary</h3>
           <div className="space-y-2 text-sm">
-            <div className="flex justify-between text-slate-600">
+            <div className="flex justify-between text-vt-muted">
               <span>Subtotal</span>
               <span>{formatCurrency(subtotal)}</span>
             </div>
-            <div className="flex justify-between text-slate-600">
+            <div className="flex justify-between text-vt-muted">
               <span>Shipping</span>
               <span>{shipping === 0 ? 'FREE' : formatCurrency(shipping)}</span>
             </div>
-            <div className="flex justify-between border-t border-slate-100 pt-2 text-base font-bold text-vt-dark">
+            <div className="flex justify-between border-t border-vt-border pt-2 text-base font-bold text-vt-foreground">
               <span>Total</span>
               <span>{formatCurrency(total)}</span>
             </div>

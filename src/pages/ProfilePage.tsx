@@ -42,7 +42,7 @@ export function ProfilePage() {
 
       <div className="px-4 pb-8">
         <div className="mb-6 flex items-center gap-4 rounded-4xl bg-vt-gradient p-5 text-white shadow-elevated">
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/20 text-2xl font-bold">
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-vt-surface/20 text-2xl font-bold">
             {user?.avatarUrl ? (
               <img src={user.avatarUrl} alt="" className="h-full w-full object-cover" />
             ) : (
@@ -59,12 +59,12 @@ export function ProfilePage() {
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-card">
+        <div className="overflow-hidden rounded-3xl border border-vt-border bg-vt-surface shadow-vt-card">
           {isAdmin && (
             <button
               type="button"
               onClick={() => navigate('/admin')}
-              className="flex w-full items-center gap-4 border-b border-slate-100 bg-vt-light-blue/40 px-4 py-4 text-left transition-colors hover:bg-vt-light-blue"
+              className="flex w-full items-center gap-4 border-b border-vt-border bg-vt-light-blue/40 px-4 py-4 text-left transition-colors hover:bg-vt-light-blue"
             >
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-vt-gradient text-white">
                 <Shield className="h-5 w-5" />
@@ -78,14 +78,14 @@ export function ProfilePage() {
               key={item.label}
               type="button"
               onClick={() => navigate(item.path)}
-              className={`flex w-full items-center gap-4 px-4 py-4 text-left transition-colors hover:bg-slate-50 ${
-                index < menuItems.length - 1 ? 'border-b border-slate-100' : ''
+              className={`flex w-full items-center gap-4 px-4 py-4 text-left transition-colors hover:bg-vt-surface-muted ${
+                index < menuItems.length - 1 ? 'border-b border-vt-border' : ''
               }`}
             >
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-vt-light-blue">
                 <item.icon className="h-5 w-5 text-vt-blue" />
               </div>
-              <span className="flex-1 font-medium text-vt-dark">{item.label}</span>
+              <span className="flex-1 font-medium text-vt-foreground">{item.label}</span>
               {item.label === 'Notifications' && unread > 0 && (
                 <span className="rounded-full bg-red-500 px-2 py-0.5 text-xs font-bold text-white">
                   {unread}

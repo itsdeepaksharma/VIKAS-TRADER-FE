@@ -8,7 +8,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: null,
-      includeAssets: ['logo.png'],
+      includeAssets: ['logo.png', 'logo@2x.png'],
       manifest: {
         name: 'Vikas Traders',
         short_name: 'Vikas Traders',

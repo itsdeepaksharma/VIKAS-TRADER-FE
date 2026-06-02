@@ -114,7 +114,7 @@ function Banner({ icon, title, description, primaryLabel, onPrimary, onDismiss }
   return (
     <div
       className={cn(
-        'flex items-start gap-3 rounded-3xl border border-slate-100 bg-white p-4 shadow-elevated',
+        'flex items-start gap-3 rounded-3xl border border-vt-border bg-vt-surface p-4 shadow-elevated',
       )}
       role="status"
     >
@@ -122,8 +122,8 @@ function Banner({ icon, title, description, primaryLabel, onPrimary, onDismiss }
         {icon}
       </div>
       <div className="min-w-0 flex-1">
-        <p className="font-semibold text-vt-dark">{title}</p>
-        <p className="mt-0.5 text-sm text-slate-500">{description}</p>
+        <p className="font-semibold text-vt-foreground">{title}</p>
+        <p className="mt-0.5 text-sm text-vt-muted">{description}</p>
         <button
           type="button"
           onClick={onPrimary}
@@ -135,7 +135,7 @@ function Banner({ icon, title, description, primaryLabel, onPrimary, onDismiss }
       <button
         type="button"
         onClick={onDismiss}
-        className="shrink-0 rounded-lg p-1 text-slate-400 hover:bg-slate-100"
+        className="shrink-0 rounded-lg p-1 text-vt-muted hover:bg-slate-100"
         aria-label="Dismiss"
       >
         <X className="h-5 w-5" />

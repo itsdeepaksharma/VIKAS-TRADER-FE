@@ -47,9 +47,9 @@ export function ProductListingPage() {
       />
       <div className="px-4 pb-4">
         <FilterPills filters={listingFilters} active={activeFilter} onChange={setActiveFilter} />
-        <p className="my-3 text-sm text-slate-500">{filtered.length} products</p>
+        <p className="my-3 text-sm text-vt-muted">{filtered.length} products</p>
         {isLoading ? (
-          <p className="py-12 text-center text-slate-500">Loading products...</p>
+          <p className="py-12 text-center text-vt-muted">Loading products...</p>
         ) : (
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
             {filtered.map((product) => (
@@ -58,7 +58,7 @@ export function ProductListingPage() {
           </div>
         )}
         {!isLoading && filtered.length === 0 && (
-          <p className="py-12 text-center text-slate-500">No products in this category yet.</p>
+          <p className="py-12 text-center text-vt-muted">No products in this category yet.</p>
         )}
       </div>
     </div>

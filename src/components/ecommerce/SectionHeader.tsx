@@ -17,7 +17,7 @@ export function SectionHeader({
 }: SectionHeaderProps) {
   return (
     <div className={cn('mb-4 flex items-center justify-between', className)}>
-      <h2 className="text-lg font-bold text-vt-dark">{title}</h2>
+      <h2 className="text-lg font-bold text-vt-foreground">{title}</h2>
       {actionTo && (
         <Link to={actionTo} className="text-sm font-semibold text-vt-blue hover:underline">
           {actionLabel}

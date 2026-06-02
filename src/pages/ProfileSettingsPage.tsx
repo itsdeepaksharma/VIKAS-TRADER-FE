@@ -53,7 +53,7 @@ export function ProfileSettingsPage() {
     <div className="pb-8">
       <PageHeader title="Settings" />
       <form onSubmit={handleSubmit} className="space-y-4 px-4">
-        <div className="flex flex-col items-center gap-3 rounded-3xl bg-white p-6 shadow-card">
+        <div className="flex flex-col items-center gap-3 rounded-3xl bg-vt-surface p-6 shadow-vt-card">
           <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-vt-light-blue text-3xl font-bold text-vt-blue">
             {user?.avatarUrl ? (
               <img src={user.avatarUrl} alt="" className="h-full w-full object-cover" />
@@ -101,7 +101,7 @@ export function ProfileSettingsPage() {
           onChange={(e) => setAddress(e.target.value)}
           required
         />
-        <p className="text-xs text-slate-500">Email: {user?.email} (cannot be changed here)</p>
+        <p className="text-xs text-vt-muted">Email: {user?.email} (cannot be changed here)</p>
 
         {error && <p className="text-sm text-red-500">{error}</p>}
         <GradientButton type="submit" fullWidth disabled={loading}>

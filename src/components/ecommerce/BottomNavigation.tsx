@@ -17,8 +17,8 @@ export function BottomNavigation() {
   const itemCount = useCartStore((s) => s.itemCount());
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-100 bg-white/95 px-2 pb-safe pt-2 shadow-[0_-4px_24px_rgba(0,0,0,0.06)] backdrop-blur-lg">
-      <div className="mx-auto flex max-w-lg items-center justify-around">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-vt-border bg-vt-surface/95 px-2 pb-safe pt-2 shadow-vt-card backdrop-blur-lg">
+      <div className="vt-container flex items-center justify-around !px-2 sm:!px-5">
         {navItems.map(({ to, icon: Icon, label }) => (
           <NavLink key={to} to={to} end={to === '/'}>
             {({ isActive }) => (
@@ -26,7 +26,7 @@ export function BottomNavigation() {
                 whileTap={{ scale: 0.9 }}
                 className={cn(
                   'flex flex-col items-center gap-0.5 rounded-2xl px-3 py-2 transition-colors',
-                  isActive ? 'text-vt-blue' : 'text-slate-400',
+                  isActive ? 'text-vt-blue' : 'text-vt-muted',
                 )}
               >
                 <div className="relative">
