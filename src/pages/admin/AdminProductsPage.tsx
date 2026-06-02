@@ -62,11 +62,7 @@ export function AdminProductsPage() {
   }, [products, stockFilter]);
 
   const pageTitle =
-    stockFilter === 'out'
-      ? 'Out of Stock'
-      : stockFilter === 'low'
-        ? 'Low Stock'
-        : 'Products';
+    stockFilter === 'out' ? 'Out of Stock' : stockFilter === 'low' ? 'Low Stock' : 'Products';
 
   const saveMutation = useMutation({
     mutationFn: async () => {
@@ -179,7 +175,11 @@ export function AdminProductsPage() {
           <GradientButton
             onClick={() => saveMutation.mutate()}
             disabled={
-              saveMutation.isPending || !form.category_id || !form.name || !form.image || !form.price
+              saveMutation.isPending ||
+              !form.category_id ||
+              !form.name ||
+              !form.image ||
+              !form.price
             }
           >
             {editingId ? 'Update Product' : 'Add Product'}
@@ -225,17 +225,17 @@ export function AdminProductsPage() {
                   <td className="px-4 py-3">{formatCurrency(p.price)}</td>
                   <td className="px-4 py-3">{p.stockQuantity ?? 0}</td>
                   <td className="px-4 py-3">
-                    <span
-                      className={
-                        p.inStock ? 'text-emerald-600' : 'font-semibold text-red-600'
-                      }
-                    >
+                    <span className={p.inStock ? 'text-emerald-600' : 'font-semibold text-red-600'}>
                       {p.inStock ? 'In stock' : 'Out of stock'}
                     </span>
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-2">
-                      <button type="button" className="text-vt-blue" onClick={() => startEdit(p.id)}>
+                      <button
+                        type="button"
+                        className="text-vt-blue"
+                        onClick={() => startEdit(p.id)}
+                      >
                         Edit
                       </button>
                       <button

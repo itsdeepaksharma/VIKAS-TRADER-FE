@@ -1,5 +1,5 @@
-import { Heart, ShoppingCart, Trash2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Heart, ShoppingCart, Trash2, Zap } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { GradientButton } from '../components/ecommerce/GradientButton';
 import { PageHeader } from '../components/ecommerce/PageHeader';
@@ -8,13 +8,14 @@ import { useWishlistStore } from '../store/wishlistStore';
 import { formatCurrency } from '../lib/utils';
 
 export function WishlistPage() {
+  const navigate = useNavigate();
   const { items, toggle } = useWishlistStore();
   const addItem = useCartStore((s) => s.addItem);
 
   if (items.length === 0) {
     return (
       <div>
-        <PageHeader title="Wishlist" showBack={false} />
+        <PageHeader title="Wishlist" />
         <div className="flex flex-col items-center px-4 py-20">
           <Heart className="h-16 w-16 text-slate-200" />
           <p className="mt-4 font-semibold text-vt-dark">No saved items yet</p>
@@ -29,7 +30,7 @@ export function WishlistPage() {
 
   return (
     <div>
-      <PageHeader title="Wishlist" showBack={false} />
+      <PageHeader title="Wishlist" />
       <div className="space-y-3 px-4 pb-4">
         {items.map((product) => (
           <div
@@ -43,24 +44,37 @@ export function WishlistPage() {
                 className="h-24 w-24 rounded-2xl object-cover"
               />
             </Link>
-            <div className="flex flex-1 flex-col">
+            <div className="flex min-w-0 flex-1 flex-col">
               <Link to={`/products/${product.id}`}>
                 <h3 className="font-semibold text-vt-dark">{product.name}</h3>
               </Link>
               <p className="mt-1 font-bold text-vt-blue">{formatCurrency(product.price)}</p>
-              <div className="mt-auto flex items-center gap-2">
+              <div className="mt-auto flex flex-col gap-2 sm:flex-row">
                 <button
                   type="button"
+                  disabled={!product.inStock}
                   onClick={() => addItem(product)}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-vt-gradient py-2 text-sm font-semibold text-white"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-vt-gradient py-2 text-sm font-semibold text-white disabled:opacity-50"
                 >
                   <ShoppingCart className="h-4 w-4" />
                   Add to Cart
                 </button>
                 <button
                   type="button"
+                  disabled={!product.inStock}
+                  onClick={() => {
+                    addItem(product);
+                    navigate('/checkout');
+                  }}
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-vt-blue py-2 text-sm font-semibold text-vt-blue disabled:opacity-50"
+                >
+                  <Zap className="h-4 w-4" />
+                  Buy Now
+                </button>
+                <button
+                  type="button"
                   onClick={() => toggle(product)}
-                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-red-500"
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-50 text-red-500"
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>

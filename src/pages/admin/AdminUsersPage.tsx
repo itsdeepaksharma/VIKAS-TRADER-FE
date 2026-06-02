@@ -12,7 +12,11 @@ export function AdminUsersPage() {
   const [searchParams] = useSearchParams();
   const userFilter = searchParams.get('filter');
 
-  const { data: users = [], isLoading, isError } = useQuery({
+  const {
+    data: users = [],
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ['admin-users'],
     queryFn: getAdminUsers,
   });

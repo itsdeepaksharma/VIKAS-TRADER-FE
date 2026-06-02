@@ -143,8 +143,8 @@ export function AdminDashboardPage() {
         <div className="rounded-3xl border border-slate-100 bg-vt-gradient p-6 text-white shadow-elevated">
           <h2 className="font-semibold">Vikas Traders Admin</h2>
           <p className="mt-2 text-sm text-white/85">
-            Full inventory control: categories, products, quantities, and order fulfillment from
-            one panel.
+            Full inventory control: categories, products, quantities, and order fulfillment from one
+            panel.
           </p>
         </div>
       </div>

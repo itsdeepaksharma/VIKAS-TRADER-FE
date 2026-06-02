@@ -13,6 +13,7 @@ export type UserProfile = {
   email: string;
   address: string;
   isAdmin: boolean;
+  avatarUrl?: string;
 };
 
 type AuthState = {
@@ -23,6 +24,8 @@ type AuthState = {
   register: (payload: RegisterPayload) => Promise<void>;
   logout: () => void;
   setSession: (accessToken: string, user: User) => void;
+  updateProfile: (user: User) => void;
+  setAvatarUrl: (url: string | undefined) => void;
 };
 
 function mapUser(user: User): UserProfile {
@@ -66,6 +69,14 @@ export const useAuthStore = create<AuthState>()(
           user: mapUser(response.user),
         });
       },
+      updateProfile: (user) =>
+        set((state) => ({
+          user: state.user ? { ...mapUser(user), avatarUrl: state.user.avatarUrl } : mapUser(user),
+        })),
+      setAvatarUrl: (url) =>
+        set((state) => ({
+          user: state.user ? { ...state.user, avatarUrl: url } : null,
+        })),
       logout: () => set({ accessToken: null, isAuthenticated: false, user: null }),
     }),
     { name: 'vt-auth' },

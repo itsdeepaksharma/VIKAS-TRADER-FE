@@ -38,12 +38,7 @@ export function StepIndicator({ currentStep }: StepIndicatorProps) {
                 {isComplete ? <Check className="h-4 w-4" /> : index + 1}
               </div>
               {index < steps.length - 1 && (
-                <div
-                  className={cn(
-                    'h-0.5 flex-1',
-                    isComplete ? 'bg-vt-blue' : 'bg-slate-200',
-                  )}
-                />
+                <div className={cn('h-0.5 flex-1', isComplete ? 'bg-vt-blue' : 'bg-slate-200')} />
               )}
             </div>
             <span

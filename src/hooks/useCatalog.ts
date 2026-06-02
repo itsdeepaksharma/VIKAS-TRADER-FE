@@ -16,10 +16,19 @@ export function useCategories() {
   });
 }
 
-export function useProducts(params?: { category_slug?: string; best_sellers?: boolean }) {
+export function useProducts(
+  params?: {
+    category_slug?: string;
+    best_sellers?: boolean;
+    q?: string;
+    newest?: boolean;
+  },
+  options?: { enabled?: boolean },
+) {
   return useQuery({
     queryKey: ['products', params],
     queryFn: async () => (await fetchProducts(params)).map(mapProduct),
+    enabled: options?.enabled ?? true,
   });
 }
 

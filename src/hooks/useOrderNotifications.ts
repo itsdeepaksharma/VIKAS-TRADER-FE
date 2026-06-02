@@ -1,0 +1,39 @@
+import { useEffect, useRef } from 'react';
+
+import { useMyOrders } from './useOrders';
+import { useNotificationStore } from '../store/notificationStore';
+import type { OrderStatus } from '../types/product';
+
+const CONFIRMED: OrderStatus[] = ['processing', 'shipped', 'delivered'];
+
+function statusMessage(status: OrderStatus): string | null {
+  if (CONFIRMED.includes(status)) {
+    return 'Your order has been confirmed by Vikas Traders.';
+  }
+  if (status === 'cancelled') {
+    return 'Your order was cancelled. Contact us if you need help.';
+  }
+  return null;
+}
+
+export function useOrderNotifications() {
+  const { data: orders = [] } = useMyOrders();
+  const add = useNotificationStore((s) => s.add);
+  const knownStatuses = useRef<Record<string, OrderStatus>>({});
+
+  useEffect(() => {
+    for (const order of orders) {
+      const prev = knownStatuses.current[order.id];
+      if (prev && prev !== order.status) {
+        const message = statusMessage(order.status);
+        if (message) {
+          add({
+            title: order.status === 'cancelled' ? 'Order cancelled' : 'Order confirmed',
+            message: `${message} Order #${order.id.slice(0, 8).toUpperCase()}.`,
+          });
+        }
+      }
+      knownStatuses.current[order.id] = order.status;
+    }
+  }, [orders, add]);
+}

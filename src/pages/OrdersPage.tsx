@@ -1,34 +1,35 @@
-import type { OrderStatus } from '../types/product';
 import { OrderCard } from '../components/ecommerce/OrderCard';
 import { PageHeader } from '../components/ecommerce/PageHeader';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { useMyOrders } from '../hooks/useOrders';
+import { isConfirmedOrder } from '../lib/orderStatus';
 
-const tabs: { value: string; label: string; filter?: OrderStatus }[] = [
+const tabs = [
   { value: 'all', label: 'All' },
-  { value: 'pending', label: 'New', filter: 'pending' },
-  { value: 'processing', label: 'Processing', filter: 'processing' },
-  { value: 'shipped', label: 'Shipped', filter: 'shipped' },
-  { value: 'delivered', label: 'Delivered', filter: 'delivered' },
-  { value: 'cancelled', label: 'Cancelled', filter: 'cancelled' },
-];
+  { value: 'confirmed', label: 'Confirmed' },
+  { value: 'cancelled', label: 'Cancelled' },
+] as const;
 
 export function OrdersPage() {
   const { data: orders = [], isLoading, isError } = useMyOrders();
 
+  function filterOrders(tab: string) {
+    if (tab === 'confirmed') return orders.filter((o) => isConfirmedOrder(o.status));
+    if (tab === 'cancelled') return orders.filter((o) => o.status === 'cancelled');
+    return orders;
+  }
+
   return (
     <div>
-      <PageHeader title="My Orders" showBack={false} />
+      <PageHeader title="My Orders" />
       <div className="px-4 pb-4">
         {isLoading && <p className="py-8 text-center text-slate-500">Loading orders...</p>}
         {isError && (
-          <p className="rounded-2xl bg-red-50 p-4 text-sm text-red-600">
-            Failed to load orders.
-          </p>
+          <p className="rounded-2xl bg-red-50 p-4 text-sm text-red-600">Failed to load orders.</p>
         )}
         {!isLoading && !isError && (
           <Tabs defaultValue="all">
-            <TabsList className="mb-4 w-full flex-wrap">
+            <TabsList className="mb-4 grid w-full grid-cols-3">
               {tabs.map((tab) => (
                 <TabsTrigger key={tab.value} value={tab.value}>
                   {tab.label}
@@ -36,16 +37,14 @@ export function OrdersPage() {
               ))}
             </TabsList>
             {tabs.map((tab) => {
-              const list = tab.filter
-                ? orders.filter((o) => o.status === tab.filter)
-                : orders;
+              const list = filterOrders(tab.value);
               return (
                 <TabsContent key={tab.value} value={tab.value} className="space-y-3">
                   {list.map((order) => (
                     <OrderCard key={order.id} order={order} />
                   ))}
                   {list.length === 0 && (
-                    <p className="py-8 text-center text-slate-500">No orders in this status.</p>
+                    <p className="py-8 text-center text-slate-500">No orders in this tab.</p>
                   )}
                 </TabsContent>
               );

@@ -33,9 +33,7 @@ export function AdminOrderAccordionItem({
       >
         <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-4 gap-y-2">
           <div className="min-w-0">
-            <p className="font-semibold text-vt-dark">
-              #{order.id.slice(0, 8).toUpperCase()}
-            </p>
+            <p className="font-semibold text-vt-dark">#{order.id.slice(0, 8).toUpperCase()}</p>
             <p className="truncate text-xs text-slate-500">
               {new Date(order.date).toLocaleString('en-IN', {
                 day: 'numeric',
@@ -77,7 +75,10 @@ export function AdminOrderAccordionItem({
               </div>
               <div className="flex items-start gap-2 text-sm">
                 <Mail className="mt-0.5 h-4 w-4 shrink-0 text-vt-blue" />
-                <a href={`mailto:${buyer.email}`} className="break-all text-vt-blue hover:underline">
+                <a
+                  href={`mailto:${buyer.email}`}
+                  className="break-all text-vt-blue hover:underline"
+                >
                   {buyer.email}
                 </a>
               </div>

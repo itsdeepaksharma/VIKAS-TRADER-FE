@@ -10,7 +10,9 @@
     "lint": "eslint . --max-warnings=0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "check": "npm run lint && npm run typecheck && npm run build",
+    "logo:transparent": "node scripts/remove-logo-background.mjs"
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "1.3.2",

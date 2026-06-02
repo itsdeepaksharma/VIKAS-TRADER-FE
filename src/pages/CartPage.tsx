@@ -16,7 +16,7 @@ export function CartPage() {
   if (items.length === 0) {
     return (
       <div>
-        <PageHeader title="My Cart" showBack={false} />
+        <PageHeader title="My Cart" />
         <div className="flex flex-col items-center justify-center px-4 py-20">
           <p className="text-lg font-semibold text-vt-dark">Your cart is empty</p>
           <p className="mt-1 text-sm text-slate-500">Add plasticware essentials to get started</p>
@@ -30,7 +30,7 @@ export function CartPage() {
 
   return (
     <div className="pb-44">
-      <PageHeader title="My Cart" showBack={false} />
+      <PageHeader title="My Cart" />
 
       <div className="space-y-3 px-4">
         {items.map((item) => (
@@ -45,9 +45,7 @@ export function CartPage() {
             />
             <div className="flex flex-1 flex-col">
               <h3 className="line-clamp-2 font-semibold text-vt-dark">{item.product.name}</h3>
-              <p className="mt-1 font-bold text-vt-blue">
-                {formatCurrency(item.product.price)}
-              </p>
+              <p className="mt-1 font-bold text-vt-blue">{formatCurrency(item.product.price)}</p>
               <div className="mt-auto flex items-center justify-between">
                 <QuantitySelector
                   value={item.quantity}

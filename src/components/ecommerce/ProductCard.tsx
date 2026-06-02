@@ -26,11 +26,7 @@ export function ProductCard({ product, layout = 'grid' }: ProductCardProps) {
       >
         <Link to={`/products/${product.id}`}>
           <div className="relative h-36 bg-vt-light-blue">
-            <img
-              src={product.image}
-              alt={product.name}
-              className="h-full w-full object-cover"
-            />
+            <img src={product.image} alt={product.name} className="h-full w-full object-cover" />
             <button
               type="button"
               onClick={(e) => {

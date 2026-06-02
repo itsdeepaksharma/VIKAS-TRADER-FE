@@ -59,14 +59,11 @@ export const useCartStore = create<CartState>()(
           items:
             quantity <= 0
               ? state.items.filter((i) => i.product.id !== productId)
-              : state.items.map((i) =>
-                  i.product.id === productId ? { ...i, quantity } : i,
-                ),
+              : state.items.map((i) => (i.product.id === productId ? { ...i, quantity } : i)),
         })),
       clearCart: () => set({ items: [] }),
       itemCount: () => get().items.reduce((sum, i) => sum + i.quantity, 0),
-      subtotal: () =>
-        get().items.reduce((sum, i) => sum + i.product.price * i.quantity, 0),
+      subtotal: () => get().items.reduce((sum, i) => sum + i.product.price * i.quantity, 0),
     }),
     { name: 'vt-cart' },
   ),

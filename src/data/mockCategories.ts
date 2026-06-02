@@ -6,8 +6,7 @@ export const categories: Category[] = [
     slug: 'buckets-mugs',
     name: 'Buckets & Mugs',
     itemCount: 120,
-    image:
-      'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=400&fit=crop',
+    image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=400&fit=crop',
     bgColor: 'bg-vt-light-blue',
   },
   {
@@ -15,8 +14,7 @@ export const categories: Category[] = [
     slug: 'baskets-organizers',
     name: 'Baskets & Organizers',
     itemCount: 85,
-    image:
-      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop',
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop',
     bgColor: 'bg-vt-light-mint',
   },
   {
@@ -24,8 +22,7 @@ export const categories: Category[] = [
     slug: 'containers',
     name: 'Containers',
     itemCount: 200,
-    image:
-      'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop',
+    image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=400&fit=crop',
     bgColor: 'bg-amber-50',
   },
   {
@@ -33,8 +30,7 @@ export const categories: Category[] = [
     slug: 'kitchenware',
     name: 'Kitchenware',
     itemCount: 150,
-    image:
-      'https://images.unsplash.com/photo-1556909202-7a9a0f8b0f0f?w=400&h=400&fit=crop',
+    image: 'https://images.unsplash.com/photo-1556909202-7a9a0f8b0f0f?w=400&h=400&fit=crop',
     bgColor: 'bg-orange-50',
   },
   {
@@ -42,8 +38,7 @@ export const categories: Category[] = [
     slug: 'cleaning-supplies',
     name: 'Cleaning Supplies',
     itemCount: 95,
-    image:
-      'https://images.unsplash.com/photo-1563453392213-326a0a0c0f0f?w=400&h=400&fit=crop',
+    image: 'https://images.unsplash.com/photo-1563453392213-326a0a0c0f0f?w=400&h=400&fit=crop',
     bgColor: 'bg-sky-50',
   },
   {
@@ -51,8 +46,7 @@ export const categories: Category[] = [
     slug: 'household',
     name: 'Household',
     itemCount: 180,
-    image:
-      'https://images.unsplash.com/photo-1585421514288-efb74c2b69bb?w=400&h=400&fit=crop',
+    image: 'https://images.unsplash.com/photo-1585421514288-efb74c2b69bb?w=400&h=400&fit=crop',
     bgColor: 'bg-vt-light-blue',
   },
   {
@@ -60,8 +54,7 @@ export const categories: Category[] = [
     slug: 'storage',
     name: 'Storage Solutions',
     itemCount: 110,
-    image:
-      'https://images.unsplash.com/photo-1595428774223-ef9bbecbb547?w=400&h=400&fit=crop',
+    image: 'https://images.unsplash.com/photo-1595428774223-ef9bbecbb547?w=400&h=400&fit=crop',
     bgColor: 'bg-vt-light-mint',
   },
   {
@@ -69,8 +62,7 @@ export const categories: Category[] = [
     slug: 'wholesale',
     name: 'Wholesale Packs',
     itemCount: 45,
-    image:
-      'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=400&h=400&fit=crop',
+    image: 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=400&h=400&fit=crop',
     bgColor: 'bg-emerald-50',
   },
 ];
@@ -79,7 +71,6 @@ export const homeCategories = categories.slice(0, 6);
 
 export const quickActions = [
   { id: 'categories', label: 'Categories', icon: 'grid', path: '/categories' },
-  { id: 'new', label: 'New Arrivals', icon: 'sparkles', path: '/categories/containers' },
+  { id: 'new', label: 'New Arrivals', icon: 'sparkles', path: '/new-arrivals' },
   { id: 'best', label: 'Best Sellers', icon: 'trending', path: '/categories/containers' },
-  { id: 'offers', label: 'Offers', icon: 'tag', path: '/categories/wholesale' },
 ] as const;

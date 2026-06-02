@@ -4,7 +4,6 @@ import { FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { GradientButton } from '../components/ecommerce/GradientButton';
-import { VTLogo } from '../components/layout/VTLogo';
 import { Input } from '../components/ui/input';
 import { getApiErrorMessage } from '../api/client';
 import { useAuthStore } from '../store/authStore';
@@ -46,23 +45,16 @@ export function SignupPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center px-6 py-10">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-6"
-      >
-        <VTLogo size="lg" />
-      </motion.div>
-
+    <div className="flex flex-1 flex-col items-center justify-center px-6 py-10">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
         className="glass-card w-full max-w-md p-8"
       >
         <h1 className="text-2xl font-bold text-vt-dark">Create Account</h1>
-        <p className="mt-1 text-sm text-slate-500">Join Vikas Traders for wholesale & retail shopping</p>
+        <p className="mt-1 text-sm text-slate-500">
+          Join Vikas Traders for wholesale & retail shopping
+        </p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <div className="grid grid-cols-2 gap-3">

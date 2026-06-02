@@ -60,7 +60,10 @@ export async function getAdminUsers(): Promise<AdminUserListItem[]> {
   return data;
 }
 
-export async function updateUserStatus(userId: string, isActive: boolean): Promise<AdminUserListItem> {
+export async function updateUserStatus(
+  userId: string,
+  isActive: boolean,
+): Promise<AdminUserListItem> {
   const { data } = await apiClient.patch<AdminUserListItem>(`/admin/users/${userId}/status`, {
     is_active: isActive,
   });
@@ -118,10 +121,7 @@ export async function getAdminOrders(status?: string): Promise<ApiAdminOrder[]> 
   return data;
 }
 
-export async function updateOrderStatus(
-  orderId: string,
-  status: string,
-): Promise<ApiAdminOrder> {
+export async function updateOrderStatus(orderId: string, status: string): Promise<ApiAdminOrder> {
   const { data } = await apiClient.patch<ApiAdminOrder>(`/admin/orders/${orderId}/status`, {
     status,
   });

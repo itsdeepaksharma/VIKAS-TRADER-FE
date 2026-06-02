@@ -18,7 +18,13 @@ const accents = {
   slate: 'bg-slate-100 text-slate-700',
 };
 
-export function AdminStatCard({ title, value, icon: Icon, accent = 'blue', to }: AdminStatCardProps) {
+export function AdminStatCard({
+  title,
+  value,
+  icon: Icon,
+  accent = 'blue',
+  to,
+}: AdminStatCardProps) {
   const content = (
     <>
       <div className="flex items-start justify-between">

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import type { Order } from '../../types/product';
 import { formatCurrency } from '../../lib/utils';
-import { StatusBadge } from './StatusBadge';
+import { CustomerOrderBadge } from './CustomerOrderBadge';
 
 type OrderCardProps = {
   order: Order;
@@ -14,9 +14,7 @@ export function OrderCard({ order }: OrderCardProps) {
     <div className="rounded-3xl border border-slate-100 bg-white p-4 shadow-card">
       <div className="flex items-start justify-between">
         <div>
-          <p className="font-semibold text-vt-dark">
-            #{order.id.slice(0, 8).toUpperCase()}
-          </p>
+          <p className="font-semibold text-vt-dark">#{order.id.slice(0, 8).toUpperCase()}</p>
           <p className="text-xs text-slate-500">
             {new Date(order.date).toLocaleDateString('en-IN', {
               day: 'numeric',
@@ -25,15 +23,19 @@ export function OrderCard({ order }: OrderCardProps) {
             })}
           </p>
         </div>
-        <StatusBadge status={order.status} />
+        <CustomerOrderBadge status={order.status} />
       </div>
       <div className="mt-3 flex gap-2">
         {order.items.slice(0, 3).map((item) => (
           <img
             key={item.product.id}
             src={item.product.image}
-            alt=""
-            className="h-12 w-12 rounded-xl object-cover ring-2 ring-white"
+            alt={item.product.name}
+            className="h-12 w-12 rounded-xl bg-slate-100 object-cover ring-2 ring-white"
+            onError={(e) => {
+              e.currentTarget.src =
+                'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=100&h=100&fit=crop';
+            }}
           />
         ))}
         {order.items.length > 3 && (
@@ -45,8 +47,8 @@ export function OrderCard({ order }: OrderCardProps) {
       <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-3">
         <span className="font-bold text-vt-dark">{formatCurrency(order.total)}</span>
         <Link
-          to={`/orders`}
-          className="flex items-center gap-1 text-sm font-semibold text-vt-blue"
+          to={`/orders/${order.id}`}
+          className="flex items-center gap-1 text-sm font-semibold text-vt-blue hover:underline"
         >
           View Details <ChevronRight className="h-4 w-4" />
         </Link>

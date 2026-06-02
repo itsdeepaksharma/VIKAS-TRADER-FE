@@ -2,20 +2,28 @@ import { AnimatePresence } from 'framer-motion';
 import { Outlet, useLocation } from 'react-router-dom';
 
 import { BottomNavigation } from '../components/ecommerce/BottomNavigation';
+import { NotificationBellMenu } from '../components/ecommerce/NotificationBellMenu';
+import { AppBrandHeader } from '../components/layout/AppBrandHeader';
 import { PageTransition } from '../components/layout/PageTransition';
+import { useOrderNotifications } from '../hooks/useOrderNotifications';
 
-const hideNavPaths = ['/login', '/checkout'];
+const hideNavPaths = ['/login', '/checkout', '/products'];
 
 export function MainLayout() {
   const location = useLocation();
+  const isHome = location.pathname === '/';
   const showNav = !hideNavPaths.some((p) => location.pathname.startsWith(p));
+  useOrderNotifications();
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="flex h-[100dvh] flex-col overflow-hidden bg-vt-beige-light">
+      <AppBrandHeader rightSlot={isHome ? <NotificationBellMenu /> : undefined} />
       <AnimatePresence mode="wait">
-        <PageTransition key={location.pathname}>
-          <main className={showNav ? 'pb-24' : ''}>
-            <div className="mx-auto min-h-screen max-w-lg md:max-w-2xl lg:max-w-4xl">
+        <PageTransition key={location.pathname} className="flex min-h-0 flex-1 flex-col">
+          <main
+            className={`min-h-0 flex-1 overflow-y-auto overscroll-contain ${showNav ? 'pb-24' : 'pb-4'}`}
+          >
+            <div className="mx-auto w-full max-w-lg md:max-w-2xl lg:max-w-4xl">
               <Outlet />
             </div>
           </main>
