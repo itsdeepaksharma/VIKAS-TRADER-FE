@@ -116,7 +116,7 @@ export function AdminCategoriesPage() {
 
   return (
     <div>
-      <div className="mb-6 sm:mb-8">
+      <div className="mb-6 hidden sm:mb-8 lg:block">
         <h1 className="vt-page-title">Categories</h1>
         <p className="vt-page-desc">
           Add categories here. Item counts update automatically when products are assigned.

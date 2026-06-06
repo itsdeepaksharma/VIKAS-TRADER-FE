@@ -1,22 +1,34 @@
 import { Trash2 } from 'lucide-react';
+import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { CartStockAlerts } from '../components/ecommerce/CartStockAlerts';
 import { GradientButton } from '../components/ecommerce/GradientButton';
 import { PageHeader } from '../components/ecommerce/PageHeader';
 import { QuantitySelector } from '../components/ecommerce/QuantitySelector';
+import { useCartStockSync } from '../hooks/useCartStockSync';
 import { useCartStore } from '../store/cartStore';
-import { formatCurrency } from '../lib/utils';
+import { cn, formatCurrency } from '../lib/utils';
 
 export function CartPage() {
   const navigate = useNavigate();
   const { items, removeItem, updateQuantity, subtotal } = useCartStore();
+  const { issues, syncing, syncCartStock } = useCartStockSync();
   const total = subtotal();
+  const hasBlockingStockIssue = items.some(
+    (item) => !item.product.inStock || (item.product.stockQuantity ?? 0) < item.quantity,
+  );
+
+  useEffect(() => {
+    void syncCartStock();
+  }, [syncCartStock]);
 
   if (items.length === 0) {
     return (
       <div>
         <PageHeader title="My Cart" />
-        <div className="flex flex-col items-center justify-center px-4 py-20">
+        <CartStockAlerts issues={issues} syncing={syncing} className="pb-4" />
+        <div className="flex flex-col items-center justify-center py-20">
           <p className="text-lg font-semibold text-vt-foreground">Your cart is empty</p>
           <p className="mt-1 text-sm text-vt-muted">Add plasticware essentials to get started</p>
           <Link to="/categories" className="mt-6">
@@ -31,36 +43,61 @@ export function CartPage() {
     <div className="pb-44">
       <PageHeader title="My Cart" />
 
-      <div className="space-y-3 px-4">
-        {items.map((item) => (
-          <div
-            key={item.product.id}
-            className="flex gap-3 rounded-3xl border border-vt-border bg-vt-surface p-3 shadow-vt-card"
-          >
-            <img
-              src={item.product.image}
-              alt={item.product.name}
-              className="h-24 w-24 rounded-2xl object-cover"
-            />
-            <div className="flex flex-1 flex-col">
-              <h3 className="line-clamp-2 font-semibold text-vt-foreground">{item.product.name}</h3>
-              <p className="mt-1 font-bold text-vt-blue">{formatCurrency(item.product.price)}</p>
-              <div className="mt-auto flex items-center justify-between">
-                <QuantitySelector
-                  value={item.quantity}
-                  onChange={(q) => updateQuantity(item.product.id, q)}
-                />
-                <button
-                  type="button"
-                  onClick={() => removeItem(item.product.id)}
-                  className="text-red-400 hover:text-red-600"
-                >
-                  <Trash2 className="h-5 w-5" />
-                </button>
+      <CartStockAlerts issues={issues} syncing={syncing} className="mb-4" />
+
+      <div className="space-y-3">
+        {items.map((item) => {
+          const outOfStock = !item.product.inStock || (item.product.stockQuantity ?? 0) <= 0;
+          const maxQty = Math.max(1, item.product.stockQuantity ?? 99);
+
+          return (
+            <div
+              key={item.product.id}
+              className={cn(
+                'flex gap-3 rounded-3xl border bg-vt-surface p-3 shadow-vt-card',
+                outOfStock ? 'border-red-200 opacity-80' : 'border-vt-border',
+              )}
+            >
+              <img
+                src={item.product.image}
+                alt={item.product.name}
+                className="h-24 w-24 rounded-2xl object-cover"
+              />
+              <div className="flex flex-1 flex-col">
+                <div className="flex items-start justify-between gap-2">
+                  <h3 className="line-clamp-2 font-semibold text-vt-foreground">
+                    {item.product.name}
+                  </h3>
+                  {outOfStock && (
+                    <span className="shrink-0 rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-600">
+                      Out of stock
+                    </span>
+                  )}
+                </div>
+                <p className="mt-1 font-bold text-vt-blue">{formatCurrency(item.product.price)}</p>
+                {!outOfStock && item.product.stockQuantity != null && item.product.stockQuantity <= 5 && (
+                  <p className="mt-1 text-xs font-medium text-amber-700">
+                    Only {item.product.stockQuantity} left
+                  </p>
+                )}
+                <div className="mt-auto flex items-center justify-between">
+                  <QuantitySelector
+                    value={item.quantity}
+                    max={maxQty}
+                    onChange={(q) => updateQuantity(item.product.id, q)}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeItem(item.product.id)}
+                    className="text-red-400 hover:text-red-600"
+                  >
+                    <Trash2 className="h-5 w-5" />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="fixed bottom-16 left-0 right-0 z-30 px-4">
@@ -75,8 +112,13 @@ export function CartPage() {
               <span>{formatCurrency(total)}</span>
             </div>
           </div>
-          <GradientButton fullWidth className="mt-4" onClick={() => navigate('/checkout')}>
-            Proceed to Checkout
+          <GradientButton
+            fullWidth
+            className="mt-4"
+            disabled={syncing || hasBlockingStockIssue}
+            onClick={() => navigate('/checkout')}
+          >
+            {syncing ? 'Checking Stock...' : 'Proceed to Checkout'}
           </GradientButton>
         </div>
       </div>

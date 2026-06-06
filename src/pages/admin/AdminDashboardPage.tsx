@@ -23,7 +23,7 @@ export function AdminDashboardPage() {
 
   return (
     <div>
-      <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+      <div className="mb-6 hidden flex-col gap-4 sm:mb-8 lg:flex lg:flex-row lg:flex-wrap lg:items-center lg:justify-between">
         <div className="min-w-0">
           <h1 className="vt-page-title">Dashboard</h1>
           <p className="vt-page-desc">

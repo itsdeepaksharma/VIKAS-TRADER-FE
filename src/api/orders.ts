@@ -1,5 +1,3 @@
-import { env } from '../utils/env';
-import * as demo from '../demo/orders';
 import { apiClient } from './client';
 
 export type ApiOrderItem = {
@@ -27,13 +25,11 @@ export type CreateOrderPayload = {
 };
 
 export async function createOrder(payload: CreateOrderPayload): Promise<ApiOrder> {
-  if (env.isDemoMode) return demo.demoCreateOrder(payload);
   const { data } = await apiClient.post<ApiOrder>('/orders', payload);
   return data;
 }
 
 export async function fetchMyOrders(): Promise<ApiOrder[]> {
-  if (env.isDemoMode) return demo.demoFetchMyOrders();
   const { data } = await apiClient.get<ApiOrder[]>('/orders');
   return data;
 }

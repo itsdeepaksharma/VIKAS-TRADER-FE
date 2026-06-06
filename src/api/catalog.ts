@@ -1,5 +1,3 @@
-import { env } from '../utils/env';
-import * as demo from '../demo/catalog';
 import { apiClient } from './client';
 
 export type ApiProductColor = { id: string; name: string; hex: string };
@@ -22,6 +20,7 @@ export type ApiProduct = {
   rating: string | number;
   review_count: number;
   image: string;
+  images?: string[];
   stock_quantity: number;
   in_stock: boolean;
   features: string[];
@@ -34,13 +33,11 @@ export type ApiProduct = {
 };
 
 export async function fetchCategories(): Promise<ApiCategory[]> {
-  if (env.isDemoMode) return demo.demoFetchCategories();
   const { data } = await apiClient.get<ApiCategory[]>('/catalog/categories');
   return data;
 }
 
 export async function fetchCategory(slug: string): Promise<ApiCategory> {
-  if (env.isDemoMode) return demo.demoFetchCategory(slug);
   const { data } = await apiClient.get<ApiCategory>(`/catalog/categories/${slug}`);
   return data;
 }
@@ -51,13 +48,11 @@ export async function fetchProducts(params?: {
   q?: string;
   newest?: boolean;
 }): Promise<ApiProduct[]> {
-  if (env.isDemoMode) return demo.demoFetchProducts(params);
   const { data } = await apiClient.get<ApiProduct[]>('/catalog/products', { params });
   return data;
 }
 
 export async function fetchProduct(id: string): Promise<ApiProduct> {
-  if (env.isDemoMode) return demo.demoFetchProduct(id);
   const { data } = await apiClient.get<ApiProduct>(`/catalog/products/${id}`);
   return data;
 }

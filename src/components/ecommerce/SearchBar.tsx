@@ -69,42 +69,53 @@ export function SearchBar({
 
   return (
     <div ref={wrapperRef} className={cn('relative', className)}>
-      <form onSubmit={submit} className={cn('relative flex items-stretch', isHomeLayout && 'gap-2')}>
-        <div className={cn('relative min-w-0 flex-1', isHomeLayout && 'flex items-center')}>
-          <input
-            type="search"
-            value={value}
-            onChange={(e) => onChange?.(e.target.value)}
-            onFocus={() => setFocused(true)}
-            placeholder={placeholder}
-            autoComplete="off"
-            className={cn(
-              'h-12 w-full rounded-2xl border border-vt-border bg-vt-surface pl-4 text-sm shadow-sm transition-shadow focus:border-vt-blue focus:outline-none focus:ring-2 focus:ring-vt-blue/20',
-              isHomeLayout ? 'pr-4' : 'pr-14',
-            )}
-          />
-          {!isHomeLayout && (
+      <form
+        onSubmit={submit}
+        className={cn(isHomeLayout ? 'flex items-stretch gap-2' : 'relative')}
+      >
+        {isHomeLayout ? (
+          <>
+            <div className="relative min-w-0 flex-1">
+              <input
+                type="search"
+                value={value}
+                onChange={(e) => onChange?.(e.target.value)}
+                onFocus={() => setFocused(true)}
+                placeholder={placeholder}
+                autoComplete="off"
+                className="h-12 w-full rounded-2xl border border-vt-border bg-vt-surface pl-4 pr-14 text-sm shadow-sm transition-shadow focus:border-vt-blue focus:outline-none focus:ring-2 focus:ring-vt-blue/20"
+              />
+              <button
+                type="submit"
+                className="absolute right-1.5 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-xl bg-vt-gradient text-white shadow-sm"
+                aria-label="Search"
+              >
+                <Search className="h-4 w-4" />
+              </button>
+            </div>
+            {topAction ? (
+              <div className="flex shrink-0 flex-col justify-center">{topAction}</div>
+            ) : null}
+          </>
+        ) : (
+          <>
+            <input
+              type="search"
+              value={value}
+              onChange={(e) => onChange?.(e.target.value)}
+              onFocus={() => setFocused(true)}
+              placeholder={placeholder}
+              autoComplete="off"
+              className="h-12 w-full rounded-2xl border border-vt-border bg-vt-surface pl-4 pr-14 text-sm shadow-sm transition-shadow focus:border-vt-blue focus:outline-none focus:ring-2 focus:ring-vt-blue/20"
+            />
             <button
               type="submit"
-              className="absolute right-1.5 flex h-9 w-9 items-center justify-center rounded-xl bg-vt-gradient text-white shadow-sm"
+              className="absolute right-1.5 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-xl bg-vt-gradient text-white shadow-sm"
               aria-label="Search"
             >
               <Search className="h-4 w-4" />
             </button>
-          )}
-        </div>
-
-        {isHomeLayout && (
-          <div className="flex shrink-0 flex-col items-center justify-end gap-1.5">
-            {topAction}
-            <button
-              type="submit"
-              className="flex h-9 w-9 items-center justify-center rounded-xl bg-vt-gradient text-white shadow-sm"
-              aria-label="Search"
-            >
-              <Search className="h-4 w-4" />
-            </button>
-          </div>
+          </>
         )}
       </form>
 

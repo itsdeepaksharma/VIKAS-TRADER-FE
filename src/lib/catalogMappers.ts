@@ -19,6 +19,7 @@ export function mapCategory(c: ApiCategory): Category {
 }
 
 export function mapProduct(p: ApiProduct): Product {
+  const images = p.images?.length ? p.images : p.image ? [p.image] : [];
   return {
     id: p.id,
     name: p.name,
@@ -26,7 +27,8 @@ export function mapProduct(p: ApiProduct): Product {
     originalPrice: p.original_price != null ? num(p.original_price) : undefined,
     rating: num(p.rating),
     reviewCount: p.review_count,
-    image: p.image,
+    image: p.image || images[0] || '',
+    images,
     categoryId: p.category_id,
     categorySlug: p.category_slug,
     inStock: p.in_stock,

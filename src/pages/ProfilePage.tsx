@@ -40,7 +40,7 @@ export function ProfilePage() {
     <div>
       <PageHeader title="Profile" />
 
-      <div className="px-4 pb-8">
+      <div className="pb-8">
         <div className="mb-6 flex items-center gap-4 rounded-4xl bg-vt-gradient p-5 text-white shadow-elevated">
           <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-vt-surface/20 text-2xl font-bold">
             {user?.avatarUrl ? (
@@ -87,8 +87,9 @@ export function ProfilePage() {
               </div>
               <span className="flex-1 font-medium text-vt-foreground">{item.label}</span>
               {item.label === 'Notifications' && unread > 0 && (
-                <span className="rounded-full bg-red-500 px-2 py-0.5 text-xs font-bold text-white">
-                  {unread}
+                <span className="relative flex h-3 w-3 shrink-0">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75 animate-ping" />
+                  <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500" />
                 </span>
               )}
               <ChevronRight className="h-5 w-5 text-slate-300" />

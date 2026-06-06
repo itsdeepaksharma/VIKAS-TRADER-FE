@@ -47,8 +47,8 @@ export function AdminOrdersPage() {
 
   return (
     <div>
-      <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
-        <div className="min-w-0">
+      <div className="mb-6 flex flex-col gap-4 sm:mb-8">
+        <div className="hidden min-w-0 lg:block">
           <h1 className="vt-page-title">Orders</h1>
           <p className="vt-page-desc">
             {pendingCount} pending · {displayedOrders.length} shown · Accept (Confirmed) or mark

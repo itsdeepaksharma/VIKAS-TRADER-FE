@@ -7,6 +7,7 @@ import { FeatureChip } from '../components/ecommerce/FeatureChip';
 import { GradientButton } from '../components/ecommerce/GradientButton';
 import { PageHeader } from '../components/ecommerce/PageHeader';
 import { useProduct } from '../hooks/useCatalog';
+import { getProductImages } from '../lib/productImages';
 import { useCartStore } from '../store/cartStore';
 import { useWishlistStore } from '../store/wishlistStore';
 import { cn, formatCurrency } from '../lib/utils';
@@ -20,11 +21,13 @@ export function ProductDetailsPage() {
 
   const [selectedColor, setSelectedColor] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   useEffect(() => {
     if (product) {
       setSelectedColor(product.colors[0]?.id ?? '');
       setSelectedSize(product.sizes[0] ?? '');
+      setActiveImageIndex(0);
     }
   }, [product]);
 
@@ -49,6 +52,8 @@ export function ProductDetailsPage() {
 
   const wished = has(product.id);
   const outOfStock = !product.inStock;
+  const galleryImages = getProductImages(product);
+  const activeImage = galleryImages[activeImageIndex] ?? product.image;
   const discount = product.originalPrice
     ? Math.round((1 - product.price / product.originalPrice) * 100)
     : 0;
@@ -65,12 +70,13 @@ export function ProductDetailsPage() {
 
       <div className="flex-1 pb-36 md:pb-8">
         <div className="md:grid md:grid-cols-2 md:items-start md:gap-8 lg:gap-10">
+        <div className="md:sticky md:top-4">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="relative aspect-square overflow-hidden rounded-3xl bg-vt-light-blue sm:rounded-4xl md:sticky md:top-4"
+          className="relative aspect-square overflow-hidden rounded-3xl bg-vt-light-blue sm:rounded-4xl"
         >
-          <img src={product.image} alt={product.name} className="h-full w-full object-cover" />
+          <img src={activeImage} alt={product.name} className="h-full w-full object-cover" />
           <button
             type="button"
             onClick={() => toggle(product)}
@@ -81,6 +87,25 @@ export function ProductDetailsPage() {
             />
           </button>
         </motion.div>
+
+        {galleryImages.length > 1 && (
+          <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+            {galleryImages.map((image, index) => (
+              <button
+                key={`${index}-${image.slice(0, 24)}`}
+                type="button"
+                onClick={() => setActiveImageIndex(index)}
+                className={cn(
+                  'h-16 w-16 shrink-0 overflow-hidden rounded-xl border-2',
+                  index === activeImageIndex ? 'border-vt-blue' : 'border-transparent opacity-70',
+                )}
+              >
+                <img src={image} alt="" className="h-full w-full object-cover" />
+              </button>
+            ))}
+          </div>
+        )}
+        </div>
 
         <div className="mt-5 min-w-0 md:mt-0">
           <h1 className="text-lg font-bold text-vt-foreground sm:text-xl lg:text-2xl">{product.name}</h1>
