@@ -35,25 +35,31 @@ export function HomePage() {
   }
 
   return (
-    <div className="pb-4 pt-4">
-      <div className="mb-3 flex items-center gap-3">
-        <Link to="/" className="shrink-0" aria-label="Vikas Traders home">
-          <VTLogo size="inline" />
-        </Link>
-        <div className="min-w-0 flex-1">
-          <p className="text-sm text-vt-muted">Good Morning,</p>
-          <h1 className="text-xl font-bold text-vt-foreground">
-            {user?.name?.split(' ')[0] ?? 'Guest'} 👋
-          </h1>
+    <div className="pb-4">
+      <section className="-mx-4 mb-5 bg-vt-page px-4 pb-1 pt-4">
+        <div className="mb-4 flex items-center gap-3">
+          <Link to="/" className="shrink-0" aria-label="Vikas Traders home">
+            <VTLogo size="home" />
+          </Link>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm text-vt-muted">Good Morning,</p>
+            <h1 className="text-xl font-bold text-vt-foreground">
+              {user?.firstName ?? user?.name?.split(' ')[0] ?? 'Guest'} 👋
+            </h1>
+          </div>
         </div>
-      </div>
 
-      <div className="relative mb-5">
-        <div className="absolute right-0 bottom-full z-10 mb-2">
-          <NotificationBellMenu />
-        </div>
-        <SearchBar value={search} onChange={setSearch} onSearch={handleSearch} />
-      </div>
+        <SearchBar
+          layout="home"
+          className="mb-1"
+          value={search}
+          onChange={setSearch}
+          onSearch={handleSearch}
+          topAction={
+            <NotificationBellMenu className="[&_button]:h-9 [&_button]:w-9 [&_button]:rounded-xl" />
+          }
+        />
+      </section>
 
       <HeroBanner />
 
@@ -97,7 +103,7 @@ export function HomePage() {
         {loadingProducts ? (
           <p className="text-sm text-vt-muted">Loading products...</p>
         ) : (
-          <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 sm:-mx-5 sm:px-5">
+          <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2">
             {bestSellers.map((product) => (
               <ProductCard key={product.id} product={product} layout="horizontal" />
             ))}

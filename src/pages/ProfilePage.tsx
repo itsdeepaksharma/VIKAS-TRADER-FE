@@ -37,27 +37,25 @@ export function ProfilePage() {
   }
 
   return (
-    <div className="vt-page">
+    <div>
       <PageHeader title="Profile" />
 
-      <div className="vt-page-body-narrow space-y-4">
-        <div className="flex gap-4 rounded-3xl bg-vt-gradient p-5 text-white shadow-elevated sm:items-center">
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/20 text-2xl font-bold ring-2 ring-white/30">
+      <div className="px-4 pb-8">
+        <div className="mb-6 flex items-center gap-4 rounded-4xl bg-vt-gradient p-5 text-white shadow-elevated">
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-vt-surface/20 text-2xl font-bold">
             {user?.avatarUrl ? (
               <img src={user.avatarUrl} alt="" className="h-full w-full object-cover" />
             ) : (
               (user?.name?.charAt(0) ?? 'V')
             )}
           </div>
-          <div className="min-w-0 flex-1">
-            <h2 className="text-lg font-bold sm:text-xl">{user?.name ?? 'Guest User'}</h2>
-            {user?.mobile ? <p className="mt-0.5 text-sm text-white/90">{user.mobile}</p> : null}
-            {user?.email ? (
-              <p className="truncate text-sm text-white/80">{user.email}</p>
-            ) : null}
-            {user?.address ? (
-              <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-white/70">{user.address}</p>
-            ) : null}
+          <div className="min-w-0">
+            <h2 className="text-lg font-bold">{user?.name ?? 'Guest User'}</h2>
+            <p className="text-sm text-white/80">{user?.mobile}</p>
+            <p className="truncate text-sm text-white/70">{user?.email}</p>
+            {user?.address && (
+              <p className="mt-1 line-clamp-2 text-xs text-white/60">{user.address}</p>
+            )}
           </div>
         </div>
 
@@ -101,7 +99,7 @@ export function ProfilePage() {
         <button
           type="button"
           onClick={handleLogout}
-          className="flex w-full items-center justify-center gap-2 rounded-3xl border-2 border-red-100 bg-red-50 py-4 font-semibold text-red-600 transition-colors hover:bg-red-100"
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-3xl border-2 border-red-100 bg-red-50 py-4 font-semibold text-red-600 transition-colors hover:bg-red-100"
         >
           <LogOut className="h-5 w-5" />
           Logout

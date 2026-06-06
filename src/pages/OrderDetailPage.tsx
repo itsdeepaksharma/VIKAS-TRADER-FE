@@ -12,18 +12,18 @@ export function OrderDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="vt-page">
+      <div>
         <PageHeader title="Order Details" />
-        <p className="vt-page-body py-8 text-center text-vt-muted">Loading...</p>
+        <p className="px-4 py-8 text-center text-vt-muted">Loading...</p>
       </div>
     );
   }
 
   if (!order) {
     return (
-      <div className="vt-page">
+      <div>
         <PageHeader title="Order Details" />
-        <div className="vt-page-body-narrow py-12 text-center">
+        <div className="px-4 py-12 text-center">
           <p className="font-medium text-vt-foreground">Order not found</p>
           <Link to="/orders" className="mt-4 inline-block text-sm font-semibold text-vt-blue">
             Back to My Orders
@@ -34,12 +34,12 @@ export function OrderDetailPage() {
   }
 
   return (
-    <div className="vt-page">
+    <div className="pb-8">
       <PageHeader title="Order Details" />
-      <div className="vt-page-body-narrow space-y-4">
+      <div className="space-y-4 px-4">
         <div className="rounded-3xl border border-vt-border bg-vt-surface p-4 shadow-vt-card">
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0">
+          <div className="flex items-start justify-between">
+            <div>
               <p className="font-semibold text-vt-foreground">#{order.id.slice(0, 8).toUpperCase()}</p>
               <p className="text-xs text-vt-muted">
                 {new Date(order.date).toLocaleDateString('en-IN', {
@@ -53,12 +53,12 @@ export function OrderDetailPage() {
             </div>
             <CustomerOrderBadge status={order.status} />
           </div>
-          {order.shippingAddress ? (
+          {order.shippingAddress && (
             <p className="mt-3 text-sm text-vt-muted">
               <span className="font-medium text-vt-foreground">Delivery: </span>
               {order.shippingAddress}
             </p>
-          ) : null}
+          )}
         </div>
 
         <div className="rounded-3xl border border-vt-border bg-vt-surface p-4 shadow-vt-card">
@@ -69,7 +69,7 @@ export function OrderDetailPage() {
                 <img
                   src={item.product.image}
                   alt={item.product.name}
-                  className="h-16 w-16 shrink-0 rounded-xl bg-slate-100 object-cover"
+                  className="h-16 w-16 rounded-xl object-cover bg-slate-100"
                 />
                 <div className="min-w-0 flex-1">
                   <Link

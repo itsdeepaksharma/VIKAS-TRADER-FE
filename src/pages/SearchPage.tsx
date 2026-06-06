@@ -10,9 +10,9 @@ export function SearchPage() {
   const { data: products = [], isLoading } = useProducts({ q: query || undefined });
 
   return (
-    <div className="vt-page">
+    <div className="pb-6">
       <PageHeader title={query ? `Results for "${query}"` : 'Search'} />
-      <div className="vt-page-body">
+      <div className="px-4">
         {isLoading && <p className="text-vt-muted">Searching...</p>}
         {!isLoading && products.length === 0 && (
           <p className="py-12 text-center text-vt-muted">No products found.</p>

@@ -11,8 +11,9 @@ import {
   X,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { NavLink, Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
+import { AppBrandHeader } from '../components/layout/AppBrandHeader';
 import { VTLogo } from '../components/layout/VTLogo';
 import { useAuthStore } from '../store/authStore';
 import { cn } from '../lib/utils';
@@ -37,9 +38,6 @@ function AdminSidebar({
 }) {
   return (
     <div className="flex h-full flex-col p-4 lg:p-5">
-      <Link to="/admin" className="mb-4 hidden justify-center lg:flex" aria-label="Admin home">
-        <VTLogo size="sm" centered />
-      </Link>
       <p className="mb-4 hidden text-center text-sm font-bold text-vt-foreground lg:block">
         Admin Panel
       </p>
@@ -162,7 +160,11 @@ export function AdminLayout() {
           </span>
         </header>
 
-        <main className="min-w-0 flex-1">
+        <div className="hidden lg:block">
+          <AppBrandHeader homeTo="/admin" />
+        </div>
+
+        <main className="min-w-0 flex-1 [--app-header-h:3.5rem] sm:[--app-header-h:4.25rem] lg:[--app-header-h:4.25rem]">
           <div className="vt-container py-4 sm:py-5 lg:py-6">
             <Outlet />
           </div>

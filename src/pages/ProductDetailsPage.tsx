@@ -60,10 +60,10 @@ export function ProductDetailsPage() {
   }
 
   return (
-    <div className="vt-page flex min-h-0 flex-col">
+    <div className="flex min-h-0 flex-col">
       <PageHeader title="Product Details" />
 
-      <div className="vt-page-body flex-1 pb-36 md:pb-8">
+      <div className="flex-1 pb-36 md:pb-8">
         <div className="md:grid md:grid-cols-2 md:items-start md:gap-8 lg:gap-10">
         <motion.div
           initial={{ opacity: 0 }}

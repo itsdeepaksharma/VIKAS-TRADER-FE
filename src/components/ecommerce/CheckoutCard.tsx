@@ -10,6 +10,7 @@ type CheckoutCardProps = {
 };
 
 export function CheckoutCard({ subtotal }: CheckoutCardProps) {
+  const total = subtotal;
   const user = useAuthStore((s) => s.user);
   const hasAddress = Boolean(user?.name?.trim() || user?.address?.trim());
 
@@ -57,9 +58,13 @@ export function CheckoutCard({ subtotal }: CheckoutCardProps) {
         <CardContent>
           <h3 className="mb-3 font-semibold text-vt-foreground">Order Summary</h3>
           <div className="space-y-2 text-sm">
+            <div className="flex justify-between text-vt-muted">
+              <span>Subtotal</span>
+              <span>{formatCurrency(subtotal)}</span>
+            </div>
             <div className="flex justify-between border-t border-vt-border pt-2 text-base font-bold text-vt-foreground">
               <span>Total</span>
-              <span>{formatCurrency(subtotal)}</span>
+              <span>{formatCurrency(total)}</span>
             </div>
           </div>
         </CardContent>

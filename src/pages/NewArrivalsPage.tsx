@@ -6,9 +6,9 @@ export function NewArrivalsPage() {
   const { data: products = [], isLoading } = useProducts({ newest: true });
 
   return (
-    <div className="vt-page">
+    <div className="pb-6">
       <PageHeader title="New Arrivals" />
-      <div className="vt-page-body">
+      <div className="px-4">
         {isLoading ? (
           <p className="text-vt-muted">Loading...</p>
         ) : (

@@ -42,9 +42,9 @@ export function CheckoutPage() {
   }
 
   return (
-    <div className="vt-page pb-28">
+    <div className="min-h-screen bg-vt-surface-muted pb-28">
       <PageHeader title="Checkout" />
-      <div className="vt-page-body-narrow space-y-6">
+      <div className="space-y-6 px-4 py-4">
         <StepIndicator currentStep={1} />
 
         <CheckoutCard subtotal={subtotal} />
@@ -57,8 +57,8 @@ export function CheckoutPage() {
         {error && <p className="rounded-2xl bg-red-50 p-3 text-sm text-red-600">{error}</p>}
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 z-30 border-t border-vt-border bg-vt-surface/95 backdrop-blur-md">
-        <div className="vt-container py-4">
+      <div className="fixed bottom-0 left-0 right-0 border-t border-vt-border bg-vt-surface p-4">
+        <div className="mx-auto max-w-lg">
           <GradientButton
             fullWidth
             size="lg"

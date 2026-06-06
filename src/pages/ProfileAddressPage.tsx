@@ -31,9 +31,9 @@ export function ProfileAddressPage() {
   }
 
   return (
-    <div className="vt-page">
+    <div className="pb-8">
       <PageHeader title="Delivery Address" />
-      <form onSubmit={handleSubmit} className="vt-page-body-narrow space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4 px-4">
         <p className="text-sm text-vt-muted">
           This address is used when you place orders on Vikas Traders.
         </p>
