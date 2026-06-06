@@ -22,7 +22,7 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    if (!env.isDemoMode && error.response?.status === 401) {
       useAuthStore.getState().logout();
     }
     return Promise.reject(error);
@@ -39,6 +39,9 @@ export function getApiErrorMessage(error: unknown, fallback: string): string {
     if (!error.response) {
       if (error.code === 'ECONNABORTED') {
         return 'Request timed out. Please try again.';
+      }
+      if (env.isDemoMode) {
+        return 'Something went wrong in demo mode. Please refresh and try again.';
       }
       return 'Cannot reach the server. Start the backend API on port 8000, then try again.';
     }
