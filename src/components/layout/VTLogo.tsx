@@ -2,11 +2,12 @@ import { cn } from '../../lib/utils';
 
 type VTLogoProps = {
   className?: string;
-  size?: 'header' | 'auth' | 'sm' | 'md' | 'lg';
+  size?: 'inline' | 'header' | 'auth' | 'sm' | 'md' | 'lg';
   centered?: boolean;
 };
 
 const sizes = {
+  inline: 'h-11 w-auto max-w-[3.5rem] sm:max-w-[4rem]',
   header: 'h-[3.25rem] w-auto min-w-[9rem] max-w-[13.5rem]',
   auth: 'h-28 w-auto max-w-[16rem] sm:h-32',
   sm: 'h-14 w-auto max-w-[11rem]',
