@@ -61,7 +61,7 @@ export function SignupPage() {
             <div>
               <label className="mb-1.5 block text-sm font-medium text-vt-foreground">First Name</label>
               <Input
-                placeholder="Deepak"
+                placeholder="First name"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 required
@@ -70,7 +70,7 @@ export function SignupPage() {
             <div>
               <label className="mb-1.5 block text-sm font-medium text-vt-foreground">Last Name</label>
               <Input
-                placeholder="Sharma"
+                placeholder="Last name"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 required

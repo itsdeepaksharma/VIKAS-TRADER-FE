@@ -10,8 +10,7 @@ import { formatCurrency } from '../lib/utils';
 export function CartPage() {
   const navigate = useNavigate();
   const { items, removeItem, updateQuantity, subtotal } = useCartStore();
-  const shipping = subtotal() > 999 ? 0 : 49;
-  const total = subtotal() + shipping;
+  const total = subtotal();
 
   if (items.length === 0) {
     return (
@@ -70,10 +69,6 @@ export function CartPage() {
             <div className="flex justify-between text-vt-muted">
               <span>Subtotal</span>
               <span>{formatCurrency(subtotal())}</span>
-            </div>
-            <div className="flex justify-between text-vt-muted">
-              <span>Shipping</span>
-              <span>{shipping === 0 ? 'FREE' : formatCurrency(shipping)}</span>
             </div>
             <div className="flex justify-between border-t border-vt-border pt-2 text-lg font-bold text-vt-foreground">
               <span>Total</span>
