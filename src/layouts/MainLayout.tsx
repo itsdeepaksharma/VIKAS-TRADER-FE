@@ -2,6 +2,7 @@ import { AnimatePresence } from 'framer-motion';
 import { Outlet, useLocation } from 'react-router-dom';
 
 import { BottomNavigation } from '../components/ecommerce/BottomNavigation';
+import { DemoModeBanner } from '../components/demo/DemoModeBanner';
 import { AppBrandHeader } from '../components/layout/AppBrandHeader';
 import { PageTransition } from '../components/layout/PageTransition';
 import { useOrderNotifications } from '../hooks/useOrderNotifications';
@@ -16,6 +17,7 @@ export function MainLayout() {
 
   return (
     <div className="flex h-[100dvh] flex-col overflow-hidden bg-vt-page">
+      <DemoModeBanner />
       {!isHome && <AppBrandHeader />}
       <AnimatePresence mode="wait">
         <PageTransition key={location.pathname} className="flex min-h-0 flex-1 flex-col">
