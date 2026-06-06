@@ -12,9 +12,9 @@ export function CategoriesPage() {
   const { data: categories = [], isLoading } = useCategories();
 
   return (
-    <div>
+    <div className="vt-page">
       <PageHeader title="Categories" />
-      <div className="px-4 pb-4">
+      <div className="vt-page-body">
         <SearchBar
           className="mb-5"
           placeholder="Search products..."

@@ -97,7 +97,7 @@ export function HomePage() {
         {loadingProducts ? (
           <p className="text-sm text-vt-muted">Loading products...</p>
         ) : (
-          <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2">
+          <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 sm:-mx-5 sm:px-5">
             {bestSellers.map((product) => (
               <ProductCard key={product.id} product={product} layout="horizontal" />
             ))}

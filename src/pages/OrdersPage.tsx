@@ -20,18 +20,18 @@ export function OrdersPage() {
   }
 
   return (
-    <div>
+    <div className="vt-page">
       <PageHeader title="My Orders" />
-      <div className="px-4 pb-4">
+      <div className="vt-page-body-narrow">
         {isLoading && <p className="py-8 text-center text-vt-muted">Loading orders...</p>}
         {isError && (
           <p className="rounded-2xl bg-red-50 p-4 text-sm text-red-600">Failed to load orders.</p>
         )}
         {!isLoading && !isError && (
           <Tabs defaultValue="all">
-            <TabsList className="mb-4 grid w-full grid-cols-3">
+            <TabsList className="mb-4 grid h-11 w-full grid-cols-3 gap-1 p-1">
               {tabs.map((tab) => (
-                <TabsTrigger key={tab.value} value={tab.value}>
+                <TabsTrigger key={tab.value} value={tab.value} className="w-full">
                   {tab.label}
                 </TabsTrigger>
               ))}

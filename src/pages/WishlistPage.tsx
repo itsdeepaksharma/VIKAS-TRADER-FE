@@ -14,9 +14,9 @@ export function WishlistPage() {
 
   if (items.length === 0) {
     return (
-      <div>
+      <div className="vt-page">
         <PageHeader title="Wishlist" />
-        <div className="flex flex-col items-center px-4 py-20">
+        <div className="vt-page-body flex flex-col items-center py-20">
           <Heart className="h-16 w-16 text-slate-200" />
           <p className="mt-4 font-semibold text-vt-foreground">No saved items yet</p>
           <p className="text-sm text-vt-muted">Tap the heart on products you love</p>
@@ -29,9 +29,9 @@ export function WishlistPage() {
   }
 
   return (
-    <div>
+    <div className="vt-page">
       <PageHeader title="Wishlist" />
-      <div className="space-y-3 px-4 pb-4">
+      <div className="vt-page-body space-y-3">
         {items.map((product) => (
           <div
             key={product.id}

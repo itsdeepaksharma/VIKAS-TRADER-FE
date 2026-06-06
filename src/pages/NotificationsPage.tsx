@@ -13,9 +13,9 @@ export function NotificationsPage() {
   }, [markAllRead]);
 
   return (
-    <div className="pb-6">
+    <div className="vt-page">
       <PageHeader title="Notifications" />
-      <div className="space-y-3 px-4">
+      <div className="vt-page-body-narrow space-y-3">
         {items.length === 0 ? (
           <div className="flex flex-col items-center py-16 text-center">
             <Bell className="h-12 w-12 text-slate-200" />

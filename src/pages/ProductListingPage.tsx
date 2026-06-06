@@ -33,19 +33,19 @@ export function ProductListingPage() {
   }, [activeFilter, baseList]);
 
   return (
-    <div>
+    <div className="vt-page">
       <PageHeader
         title={category?.name ?? 'Products'}
         rightAction={
           <button
             type="button"
-            className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100"
+            className="flex h-10 w-10 items-center justify-center rounded-xl bg-vt-surface-muted"
           >
             <SlidersHorizontal className="h-5 w-5" />
           </button>
         }
       />
-      <div className="px-4 pb-4">
+      <div className="vt-page-body">
         <FilterPills filters={listingFilters} active={activeFilter} onChange={setActiveFilter} />
         <p className="my-3 text-sm text-vt-muted">{filtered.length} products</p>
         {isLoading ? (

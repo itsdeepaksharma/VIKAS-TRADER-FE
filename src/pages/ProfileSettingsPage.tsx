@@ -50,9 +50,9 @@ export function ProfileSettingsPage() {
   }
 
   return (
-    <div className="pb-8">
+    <div className="vt-page">
       <PageHeader title="Settings" />
-      <form onSubmit={handleSubmit} className="space-y-4 px-4">
+      <form onSubmit={handleSubmit} className="vt-page-body-narrow space-y-4">
         <div className="flex flex-col items-center gap-3 rounded-3xl bg-vt-surface p-6 shadow-vt-card">
           <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-vt-light-blue text-3xl font-bold text-vt-blue">
             {user?.avatarUrl ? (
