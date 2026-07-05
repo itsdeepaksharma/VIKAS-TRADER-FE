@@ -7,6 +7,7 @@ export type User = {
   address: string;
   is_active: boolean;
   is_superuser: boolean;
+  avatar_url?: string | null;
 };
 
 export type AuthResponse = {

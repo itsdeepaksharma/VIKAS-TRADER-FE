@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Search } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
@@ -12,10 +12,14 @@ import {
   type ProductPayload,
 } from '../../api/admin';
 import { getApiErrorMessage } from '../../api/client';
+import { AdminEditDeleteActions } from '../../components/admin/AdminEditDeleteActions';
 import { AdminModal } from '../../components/admin/AdminModal';
+import { AdminPagination } from '../../components/admin/AdminPagination';
 import { AdminModalFooter } from '../../components/admin/AdminModalFooter';
 import { ResponsiveTable } from '../../components/admin/ResponsiveTable';
 import { MultiImageUploadField } from '../../components/admin/MultiImageUploadField';
+import { ProductColorsField } from '../../components/admin/ProductColorsField';
+import { ProductUnitsField } from '../../components/admin/ProductUnitsField';
 import { GradientButton } from '../../components/ecommerce/GradientButton';
 import { Input } from '../../components/ui/input';
 import { mapCategory, mapProduct } from '../../lib/catalogMappers';
@@ -26,6 +30,8 @@ import { isLowStock, isOutOfStock } from '../../lib/stockStatus';
 import { cn, formatCurrency } from '../../lib/utils';
 import type { Product } from '../../types/product';
 
+const PAGE_SIZE = 10;
+
 const emptyProduct: ProductPayload = {
   category_id: '',
   name: '',
@@ -34,12 +40,24 @@ const emptyProduct: ProductPayload = {
   image: '',
   images: [],
   stock_quantity: 0,
-  features: ['BPA Free'],
+  features: [],
   colors: [],
   sizes: [],
   is_best_seller: false,
   is_active: true,
 };
+
+function nonNegativeNumber(value: string): number {
+  const parsed = Number(value);
+  if (Number.isNaN(parsed) || parsed < 0) return 0;
+  return parsed;
+}
+
+function nonNegativeInt(value: string): number {
+  const parsed = Number.parseInt(value, 10);
+  if (Number.isNaN(parsed) || parsed < 0) return 0;
+  return parsed;
+}
 
 export function AdminProductsPage() {
   const queryClient = useQueryClient();
@@ -57,6 +75,8 @@ export function AdminProductsPage() {
   const [modal, setModal] = useState<'edit' | 'delete' | null>(null);
   const [selected, setSelected] = useState<Product | null>(null);
   const [editForm, setEditForm] = useState<ProductPayload>(emptyProduct);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [page, setPage] = useState(1);
 
   const { data: categories = [] } = useQuery({
     queryKey: ['admin-categories'],
@@ -68,15 +88,48 @@ export function AdminProductsPage() {
     queryFn: async () => (await getAdminProducts()).map(mapProduct),
   });
 
+  const categoryNameById = useMemo(
+    () => Object.fromEntries(categories.map((category) => [category.id, category.name])),
+    [categories],
+  );
+
   const filteredProducts = useMemo(() => {
+    let list = products;
+
     if (stockFilter === 'out') {
-      return products.filter((p) => isOutOfStock(p.stockQuantity ?? 0));
+      list = list.filter((product) => isOutOfStock(product.stockQuantity ?? 0));
+    } else if (stockFilter === 'low') {
+      list = list.filter((product) => isLowStock(product.stockQuantity ?? 0));
     }
-    if (stockFilter === 'low') {
-      return products.filter((p) => isLowStock(p.stockQuantity ?? 0));
-    }
-    return products;
-  }, [products, stockFilter]);
+
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return list;
+
+    return list.filter((product) => {
+      const categoryName = categoryNameById[product.categoryId]?.toLowerCase() ?? '';
+      return (
+        product.name.toLowerCase().includes(query) ||
+        product.description.toLowerCase().includes(query) ||
+        categoryName.includes(query)
+      );
+    });
+  }, [products, stockFilter, searchQuery, categoryNameById]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
+
+  const paginatedProducts = useMemo(() => {
+    const safePage = Math.min(page, totalPages);
+    const start = (safePage - 1) * PAGE_SIZE;
+    return filteredProducts.slice(start, start + PAGE_SIZE);
+  }, [filteredProducts, page, totalPages]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery, stockFilter]);
+
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [page, totalPages]);
 
   const pageTitle =
     stockFilter === 'out' ? 'Out of Stock' : stockFilter === 'low' ? 'Low Stock' : 'Products';
@@ -203,14 +256,16 @@ export function AdminProductsPage() {
       <div className="mb-6 hidden sm:mb-8 lg:block">
         <h1 className="vt-page-title">{pageTitle}</h1>
         <p className="vt-page-desc">
-          {stockFilter
-            ? `Showing ${filteredProducts.length} matching product(s)`
-            : 'Manage inventory, pricing, and stock levels'}
+          {searchQuery.trim()
+            ? `${filteredProducts.length} product(s) matching "${searchQuery.trim()}"`
+            : stockFilter
+              ? `Showing ${filteredProducts.length} matching product(s)`
+              : 'Manage inventory, pricing, and stock levels'}
         </p>
       </div>
 
-      {canAddProduct && (
-        <div className="mb-4 flex items-center gap-2 border-b border-vt-border pb-4">
+      <div className="mb-4 flex flex-col gap-3 border-b border-vt-border pb-4 sm:flex-row sm:items-center sm:justify-between">
+        {canAddProduct ? (
           <button
             type="button"
             onClick={() => (showAddPanel ? closeAddPanel() : openAddPanel())}
@@ -228,8 +283,22 @@ export function AdminProductsPage() {
               aria-hidden
             />
           </button>
+        ) : (
+          <div />
+        )}
+
+        <div className="relative w-full sm:max-w-sm sm:shrink-0">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-vt-muted" />
+          <Input
+            type="search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search products..."
+            className="h-11 rounded-2xl pl-10"
+            aria-label="Search products"
+          />
         </div>
-      )}
+      </div>
 
       {canAddProduct && showAddPanel && (
         <div
@@ -267,15 +336,26 @@ export function AdminProductsPage() {
             />
             <Input
               type="number"
+              min={0}
+              step="0.01"
               placeholder="Price"
               value={form.price || ''}
-              onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
+              onChange={(e) => setForm({ ...form, price: nonNegativeNumber(e.target.value) })}
+            />
+            <ProductUnitsField
+              compact
+              value={form.sizes ?? []}
+              onChange={(sizes) => setForm({ ...form, sizes })}
             />
             <Input
               type="number"
+              min={0}
+              step={1}
               placeholder="Stock quantity"
               value={form.stock_quantity ?? 0}
-              onChange={(e) => setForm({ ...form, stock_quantity: Number(e.target.value) })}
+              onChange={(e) =>
+                setForm({ ...form, stock_quantity: nonNegativeInt(e.target.value) })
+              }
             />
             <div className="sm:col-span-2">
               <MultiImageUploadField
@@ -289,7 +369,11 @@ export function AdminProductsPage() {
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
             />
-            <label className="flex items-center gap-2 text-sm">
+            <ProductColorsField
+              value={form.colors ?? []}
+              onChange={(colors) => setForm({ ...form, colors })}
+            />
+            <label className="flex items-center gap-2 text-sm sm:col-span-2">
               <input
                 type="checkbox"
                 checked={form.is_best_seller}
@@ -312,8 +396,15 @@ export function AdminProductsPage() {
 
       {isLoading ? (
         <p className="text-vt-muted">Loading...</p>
+      ) : filteredProducts.length === 0 ? (
+        <p className="rounded-3xl bg-vt-surface p-8 text-center text-vt-muted shadow-vt-card">
+          {searchQuery.trim()
+            ? `No products found for "${searchQuery.trim()}".`
+            : 'No products match this filter.'}
+        </p>
       ) : (
-        <ResponsiveTable minWidth="720px">
+        <>
+          <ResponsiveTable minWidth="720px">
             <thead className="border-b border-vt-border bg-vt-surface-muted text-vt-muted">
               <tr>
                 <th className="px-4 py-3 font-semibold">Product</th>
@@ -324,7 +415,7 @@ export function AdminProductsPage() {
               </tr>
             </thead>
             <tbody>
-              {filteredProducts.map((p) => (
+              {paginatedProducts.map((p) => (
                 <tr key={p.id} className="border-b border-vt-border">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
@@ -344,19 +435,26 @@ export function AdminProductsPage() {
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <div className="flex gap-2">
-                      <button type="button" className="text-vt-blue" onClick={() => openEdit(p)}>
-                        Edit
-                      </button>
-                      <button type="button" className="text-red-600" onClick={() => openDelete(p)}>
-                        Delete
-                      </button>
-                    </div>
+                    <AdminEditDeleteActions
+                      onEdit={() => openEdit(p)}
+                      onDelete={() => openDelete(p)}
+                      editLabel={`Edit ${p.name}`}
+                      deleteLabel={`Delete ${p.name}`}
+                    />
                   </td>
                 </tr>
               ))}
             </tbody>
         </ResponsiveTable>
+
+        <AdminPagination
+          className="mt-4"
+          page={page}
+          pageSize={PAGE_SIZE}
+          totalItems={filteredProducts.length}
+          onPageChange={setPage}
+        />
+        </>
       )}
 
       <AdminModal open={modal === 'edit'} title="Edit Product" onClose={closeModal}>
@@ -380,16 +478,25 @@ export function AdminProductsPage() {
           />
           <Input
             type="number"
+            min={0}
+            step="0.01"
             placeholder="Price"
             value={editForm.price || ''}
-            onChange={(e) => setEditForm({ ...editForm, price: Number(e.target.value) })}
+            onChange={(e) => setEditForm({ ...editForm, price: nonNegativeNumber(e.target.value) })}
+          />
+          <ProductUnitsField
+            compact
+            value={editForm.sizes ?? []}
+            onChange={(sizes) => setEditForm({ ...editForm, sizes })}
           />
           <Input
             type="number"
+            min={0}
+            step={1}
             placeholder="Stock"
             value={editForm.stock_quantity ?? 0}
             onChange={(e) =>
-              setEditForm({ ...editForm, stock_quantity: Number(e.target.value) })
+              setEditForm({ ...editForm, stock_quantity: nonNegativeInt(e.target.value) })
             }
           />
           <div className="sm:col-span-2">
@@ -403,6 +510,10 @@ export function AdminProductsPage() {
             placeholder="Description"
             value={editForm.description}
             onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+          />
+          <ProductColorsField
+            value={editForm.colors ?? []}
+            onChange={(colors) => setEditForm({ ...editForm, colors })}
           />
           <label className="flex items-center gap-2 text-sm sm:col-span-2">
             <input

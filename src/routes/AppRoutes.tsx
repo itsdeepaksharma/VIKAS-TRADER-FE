@@ -25,6 +25,7 @@ import { AdminCategoriesPage } from '../pages/admin/AdminCategoriesPage';
 import { AdminDashboardPage } from '../pages/admin/AdminDashboardPage';
 import { AdminOrdersPage } from '../pages/admin/AdminOrdersPage';
 import { AdminProductsPage } from '../pages/admin/AdminProductsPage';
+import { AdminSettingsPage } from '../pages/admin/AdminSettingsPage';
 import { AdminUsersPage } from '../pages/admin/AdminUsersPage';
 import { AdminLayout } from '../layouts/AdminLayout';
 import { AdminRoute } from './AdminRoute';
@@ -46,6 +47,7 @@ export function AppRoutes() {
           <Route path="admin/products" element={<AdminProductsPage />} />
           <Route path="admin/categories" element={<AdminCategoriesPage />} />
           <Route path="admin/users" element={<AdminUsersPage />} />
+          <Route path="admin/settings" element={<AdminSettingsPage />} />
         </Route>
       </Route>
 

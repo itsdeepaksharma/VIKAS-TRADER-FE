@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Heart, ShoppingCart, Star } from 'lucide-react';
+import { Heart, ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import { useCartStore } from '../../store/cartStore';
@@ -42,10 +42,6 @@ export function ProductCard({ product, layout = 'grid' }: ProductCardProps) {
           </div>
           <div className="p-3">
             <h3 className="line-clamp-2 text-sm font-semibold text-vt-foreground">{product.name}</h3>
-            <div className="mt-1 flex items-center gap-1 text-xs text-amber-500">
-              <Star className="h-3 w-3 fill-current" />
-              <span>{product.rating}</span>
-            </div>
             <p className="mt-1 font-bold text-vt-blue">{formatCurrency(product.price)}</p>
           </div>
         </Link>
@@ -88,11 +84,6 @@ export function ProductCard({ product, layout = 'grid' }: ProductCardProps) {
           <h3 className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold text-vt-foreground">
             {product.name}
           </h3>
-          <div className="mt-1 flex items-center gap-1 text-xs text-amber-500">
-            <Star className="h-3.5 w-3.5 fill-current" />
-            <span className="font-medium">{product.rating}</span>
-            <span className="text-vt-muted">({product.reviewCount})</span>
-          </div>
           <div className="mt-2 flex items-center justify-between">
             <div>
               <span className="font-bold text-vt-foreground">{formatCurrency(product.price)}</span>
