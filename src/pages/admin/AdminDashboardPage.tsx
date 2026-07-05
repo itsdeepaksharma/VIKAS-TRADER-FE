@@ -9,11 +9,12 @@ import {
   UserMinus,
   Users,
 } from 'lucide-react';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
-import { getAdminDashboard } from '../../api/admin';
+import { getAdminDashboard, getAdminOrders } from '../../api/admin';
 import { AdminStatCard } from '../../components/admin/AdminStatCard';
-import { cn } from '../../lib/utils';
+import { mapAdminOrder } from '../../lib/catalogMappers';
 
 export function AdminDashboardPage() {
   const { data, isLoading, isError } = useQuery({
@@ -21,25 +22,21 @@ export function AdminDashboardPage() {
     queryFn: getAdminDashboard,
   });
 
+  const { data: orders = [] } = useQuery({
+    queryKey: ['admin-orders'],
+    queryFn: async () => (await getAdminOrders()).map(mapAdminOrder),
+  });
+
+  const pendingOrderCount = useMemo(
+    () => orders.filter((order) => order.status === 'pending').length,
+    [orders],
+  );
+
   return (
     <div>
-      <div className="mb-6 hidden flex-col gap-4 sm:mb-8 lg:flex lg:flex-row lg:flex-wrap lg:items-center lg:justify-between">
-        <div className="min-w-0">
-          <h1 className="vt-page-title">Dashboard</h1>
-          <p className="vt-page-desc">
-            Store inventory, orders, and customer overview
-          </p>
-        </div>
-        <Link
-          to="/admin/orders?status=pending"
-          className={cn(
-            'inline-flex min-h-11 w-full items-center justify-center rounded-2xl bg-vt-gradient px-6 py-2.5 sm:w-auto sm:min-h-12',
-            'text-sm font-semibold text-white shadow-soft transition-all',
-            'hover:scale-[1.02] hover:shadow-elevated active:scale-[0.98]',
-          )}
-        >
-          New Orders ({data?.new_orders ?? '…'})
-        </Link>
+      <div className="mb-6 hidden sm:mb-8 lg:block">
+        <h1 className="vt-page-title">Dashboard</h1>
+        <p className="vt-page-desc">Store inventory, orders, and customer overview</p>
       </div>
 
       {isLoading && <p className="text-vt-muted">Loading stats...</p>}
@@ -61,7 +58,7 @@ export function AdminDashboardPage() {
             />
             <AdminStatCard
               title="New Orders"
-              value={data.new_orders}
+              value={pendingOrderCount}
               icon={ShoppingBag}
               variant="navy"
               to="/admin/orders?status=pending"

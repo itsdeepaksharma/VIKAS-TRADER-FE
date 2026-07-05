@@ -1,11 +1,19 @@
 import { motion } from 'framer-motion';
-import { Eye, EyeOff } from 'lucide-react';
 import { FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { GradientButton } from '../components/ecommerce/GradientButton';
+import { VTLogo } from '../components/layout/VTLogo';
 import { Input } from '../components/ui/input';
+import { PasswordInput } from '../components/ui/password-input';
 import { getApiErrorMessage } from '../api/client';
+import {
+  isValidIndianPhone,
+  normalizeIndianPhone,
+  PHONE_VALIDATION_MESSAGE,
+  sanitizePhoneInput,
+} from '../lib/phone';
+import { cn } from '../lib/utils';
 import { useAuthStore } from '../store/authStore';
 
 export function SignupPage() {
@@ -18,13 +26,21 @@ export function SignupPage() {
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [phoneError, setPhoneError] = useState('');
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setError(null);
+    setPhoneError('');
+
+    const normalizedPhone = normalizeIndianPhone(phone);
+    if (!isValidIndianPhone(normalizedPhone)) {
+      setPhoneError(PHONE_VALIDATION_MESSAGE);
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -32,7 +48,7 @@ export function SignupPage() {
         first_name: firstName.trim(),
         last_name: lastName.trim(),
         email: email.trim(),
-        phone: phone.trim(),
+        phone: normalizedPhone,
         address: address.trim(),
         password,
       });
@@ -51,8 +67,11 @@ export function SignupPage() {
         animate={{ opacity: 1, y: 0 }}
         className="glass-card w-full max-w-md p-6 sm:p-8"
       >
-        <h1 className="text-2xl font-bold text-vt-foreground">Create Account</h1>
-        <p className="mt-1 text-sm text-vt-muted">
+        <div className="mb-6 flex justify-center sm:mb-8">
+          <VTLogo size="auth" centered className="mx-auto" />
+        </div>
+        <h1 className="text-center text-2xl font-bold text-vt-foreground">Create Account</h1>
+        <p className="mt-1 text-center text-sm text-vt-muted">
           Join Vikas Traders for wholesale & retail shopping
         </p>
 
@@ -93,12 +112,20 @@ export function SignupPage() {
             <label className="mb-1.5 block text-sm font-medium text-vt-foreground">Phone Number</label>
             <Input
               type="tel"
+              inputMode="numeric"
+              autoComplete="tel"
               placeholder="9876543210"
+              maxLength={10}
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              minLength={10}
+              onChange={(e) => {
+                setPhone(sanitizePhoneInput(e.target.value));
+                if (phoneError) setPhoneError('');
+              }}
               required
+              aria-invalid={Boolean(phoneError)}
+              className={cn(phoneError && 'border-red-400 focus:border-red-400 focus:ring-red-400/20')}
             />
+            {phoneError && <p className="mt-1.5 text-sm text-red-500">{phoneError}</p>}
           </div>
 
           <div>
@@ -116,24 +143,13 @@ export function SignupPage() {
 
           <div>
             <label className="mb-1.5 block text-sm font-medium text-vt-foreground">Password</label>
-            <div className="relative">
-              <Input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Min. 8 characters"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="pr-12"
-                minLength={8}
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-vt-muted"
-              >
-                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-              </button>
-            </div>
+            <PasswordInput
+              placeholder="Min. 8 characters"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              minLength={8}
+              required
+            />
           </div>
 
           {error && <p className="text-sm text-red-500">{error}</p>}

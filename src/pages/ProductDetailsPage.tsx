@@ -1,9 +1,8 @@
 import { motion } from 'framer-motion';
-import { Heart, Star } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
-import { FeatureChip } from '../components/ecommerce/FeatureChip';
 import { GradientButton } from '../components/ecommerce/GradientButton';
 import { PageHeader } from '../components/ecommerce/PageHeader';
 import { useProduct } from '../hooks/useCatalog';
@@ -122,15 +121,10 @@ export function ProductDetailsPage() {
               </>
             )}
           </div>
-          <div className="mt-2 flex items-center gap-2">
-            <div className="flex items-center gap-1 text-amber-500">
-              <Star className="h-4 w-4 fill-current" />
-              <span className="font-semibold">{product.rating}</span>
-            </div>
-            <span className="text-sm text-vt-muted">({product.reviewCount} reviews)</span>
+          <div className="mt-2">
             <span
               className={cn(
-                'ml-auto rounded-full px-3 py-1 text-xs font-semibold',
+                'inline-flex rounded-full px-3 py-1 text-xs font-semibold',
                 product.inStock
                   ? 'bg-vt-light-blue text-vt-cyan-dark dark:text-vt-cyan'
                   : 'bg-red-100 text-red-600',
@@ -138,12 +132,6 @@ export function ProductDetailsPage() {
             >
               {product.inStock ? 'In Stock' : 'Out of Stock'}
             </span>
-          </div>
-
-          <div className="mt-4 flex flex-wrap gap-2">
-            {product.features.map((f) => (
-              <FeatureChip key={f} label={f} />
-            ))}
           </div>
 
           {product.colors.length > 0 && (
@@ -169,7 +157,7 @@ export function ProductDetailsPage() {
 
           {product.sizes.length > 0 && (
             <div className="mt-5">
-              <p className="mb-2 text-sm font-semibold text-vt-foreground">Size</p>
+              <p className="mb-2 text-sm font-semibold text-vt-foreground">Measurement unit</p>
               <div className="flex flex-wrap gap-2">
                 {product.sizes.map((size) => (
                   <button

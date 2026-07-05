@@ -38,6 +38,7 @@ function mapUser(user: User): UserProfile {
     email: user.email,
     address: user.address,
     isAdmin: user.is_superuser,
+    avatarUrl: user.avatar_url ?? undefined,
   };
 }
 
@@ -71,7 +72,7 @@ export const useAuthStore = create<AuthState>()(
       },
       updateProfile: (user) =>
         set((state) => ({
-          user: state.user ? { ...mapUser(user), avatarUrl: state.user.avatarUrl } : mapUser(user),
+          user: state.user ? mapUser(user) : state.user,
         })),
       setAvatarUrl: (url) =>
         set((state) => ({

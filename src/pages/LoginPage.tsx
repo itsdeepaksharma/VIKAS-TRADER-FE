@@ -1,12 +1,13 @@
 import { motion } from 'framer-motion';
-import { Eye, EyeOff } from 'lucide-react';
 import { FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { GradientButton } from '../components/ecommerce/GradientButton';
+import { PwaInstallCard } from '../components/pwa/PwaInstallCard';
 import { VTLogo } from '../components/layout/VTLogo';
 import { Checkbox } from '../components/ui/checkbox';
 import { Input } from '../components/ui/input';
+import { PasswordInput } from '../components/ui/password-input';
 import { getApiErrorMessage } from '../api/client';
 import { useAuthStore } from '../store/authStore';
 
@@ -15,7 +16,6 @@ export function LoginPage() {
   const login = useAuthStore((s) => s.login);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -70,25 +70,14 @@ export function LoginPage() {
           </div>
           <div>
             <label className="mb-2 block text-sm font-semibold text-vt-foreground">Password</label>
-            <div className="relative">
-              <Input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="auth-input pr-12"
-                autoComplete="current-password"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-1 text-vt-muted transition-colors hover:text-vt-foreground"
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
-              >
-                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-              </button>
-            </div>
+            <PasswordInput
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="auth-input"
+              autoComplete="current-password"
+              required
+            />
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
@@ -114,6 +103,8 @@ export function LoginPage() {
             {loading ? 'Signing in…' : 'Login'}
           </GradientButton>
         </form>
+
+        <PwaInstallCard />
 
         <p className="mt-6 text-center text-sm text-vt-muted">
           Don&apos;t have an account?{' '}

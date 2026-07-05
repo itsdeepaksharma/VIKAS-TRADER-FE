@@ -48,12 +48,14 @@ export function AdminOrderAccordionItem({
             </p>
           )}
           <p className="font-bold text-vt-blue">{formatCurrency(order.total)}</p>
-          <StatusBadge status={order.status} />
-          <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-vt-muted">
+          <span className="rounded-full bg-vt-surface-muted px-2 py-0.5 text-xs font-medium text-vt-foreground ring-1 ring-vt-border">
             {itemCount} items
           </span>
         </div>
-        <ChevronDown className="h-5 w-5 shrink-0 text-vt-muted transition-transform group-open:rotate-180" />
+        <div className="flex shrink-0 items-center gap-2">
+          <StatusBadge status={order.status} />
+          <ChevronDown className="h-5 w-5 shrink-0 text-vt-muted transition-transform group-open:rotate-180" />
+        </div>
       </summary>
 
       <div className="border-t border-vt-border px-4 pb-4 pt-3">

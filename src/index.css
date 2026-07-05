@@ -32,7 +32,7 @@
   }
 
   @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not(.dark):not(.light) {
       color-scheme: dark;
       --vt-navy: #0a1f35;
       --vt-navy-light: #132d4a;
@@ -58,6 +58,37 @@
       --vt-shadow-elevated: 0 12px 40px rgba(0, 180, 230, 0.28);
       --vt-theme-color: #0a1f35;
     }
+  }
+
+  .dark {
+    color-scheme: dark;
+    --vt-navy: #0a1f35;
+    --vt-navy-light: #132d4a;
+    --vt-mint: #b8e6d8;
+    --vt-mint-light: #c5ede6;
+    --vt-mint-pale: #1a3d5c;
+    --vt-cyan: #00c8f0;
+    --vt-cyan-light: #5ed4f7;
+    --vt-cyan-dark: #00b4e6;
+    --vt-page-bg: #0a1f35;
+    --vt-surface: #132d4a;
+    --vt-surface-hover: #1a3d5c;
+    --vt-surface-muted: #0f2847;
+    --vt-foreground: #d8f0eb;
+    --vt-muted-foreground: #9ec4b8;
+    --vt-border: #1e4466;
+    --vt-blue: var(--vt-cyan);
+    --vt-accent-soft: #1a3d5c;
+    --vt-gradient: linear-gradient(135deg, #0a1f35 0%, #00b4e6 50%, #5ed4f7 100%);
+    --vt-gradient-card: linear-gradient(135deg, #0a1f35 0%, #132d4a 45%, #00b4e6 100%);
+    --vt-shadow-card: 0 8px 32px rgba(0, 0, 0, 0.45);
+    --vt-shadow-soft: 0 4px 24px rgba(0, 200, 240, 0.2);
+    --vt-shadow-elevated: 0 12px 40px rgba(0, 180, 230, 0.28);
+    --vt-theme-color: #0a1f35;
+  }
+
+  .light {
+    color-scheme: light;
   }
 
   body {
@@ -207,5 +238,23 @@
     outline: none;
     background-color: var(--vt-surface);
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--vt-blue) 28%, transparent);
+  }
+
+  /* Hide browser-native password reveal so only our toggle shows */
+  .vt-password-input::-ms-reveal,
+  .vt-password-input::-ms-clear {
+    display: none;
+  }
+
+  .vt-password-input::-webkit-textfield-decoration-container {
+    display: none;
+  }
+
+  .vt-password-input::-webkit-credentials-auto-fill-button,
+  .vt-password-input::-webkit-strong-password-auto-fill-button {
+    visibility: hidden;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
   }
 }

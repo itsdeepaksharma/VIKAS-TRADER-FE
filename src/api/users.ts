@@ -6,6 +6,7 @@ export type UpdateProfilePayload = {
   last_name?: string;
   phone?: string;
   address?: string;
+  avatar_url?: string | null;
 };
 
 export async function getCurrentUser(): Promise<User> {

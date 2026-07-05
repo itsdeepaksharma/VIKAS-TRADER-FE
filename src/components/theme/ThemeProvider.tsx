@@ -1,26 +1,43 @@
 import { useEffect, type ReactNode } from 'react';
+import { useLocation } from 'react-router-dom';
 
-const THEME_COLOR_META = 'theme-color';
-const APPLE_STATUS_META = 'apple-mobile-web-app-status-bar-style';
-
-function applySystemTheme() {
-  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const themeColor = getComputedStyle(document.documentElement).getPropertyValue('--vt-theme-color').trim();
-
-  document.querySelector(`meta[name="${THEME_COLOR_META}"]`)?.setAttribute('content', themeColor || (isDark ? '#0A1F35' : '#ECF7F4'));
-  document
-    .querySelector(`meta[name="${APPLE_STATUS_META}"]`)
-    ?.setAttribute('content', isDark ? 'black-translucent' : 'default');
-}
+import { ThemeToggle } from './ThemeToggle';
+import { applyThemeClass, useThemeStore } from '../../store/themeStore';
+import { cn } from '../../lib/utils';
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
+  const theme = useThemeStore((state) => state.theme);
+
   useEffect(() => {
-    applySystemTheme();
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    const onChange = () => applySystemTheme();
-    mq.addEventListener('change', onChange);
-    return () => mq.removeEventListener('change', onChange);
+    applyThemeClass(theme);
+  }, [theme]);
+
+  useEffect(() => {
+    const unsubscribe = useThemeStore.persist.onFinishHydration(() => {
+      applyThemeClass(useThemeStore.getState().theme);
+    });
+
+    if (useThemeStore.persist.hasHydrated()) {
+      applyThemeClass(useThemeStore.getState().theme);
+    }
+
+    return unsubscribe;
   }, []);
 
-  return children;
+  return (
+    <>
+      {children}
+      <div
+        className={cn(
+          'fixed right-4 top-4 z-[70]',
+          isAdminRoute && 'hidden lg:block',
+        )}
+        style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
+      >
+        <ThemeToggle />
+      </div>
+    </>
+  );
 }

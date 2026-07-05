@@ -1,19 +1,13 @@
-import { Download, RefreshCw, X } from 'lucide-react';
+import { RefreshCw, X } from 'lucide-react';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { registerSW } from 'virtual:pwa-register';
 
 import { cn } from '../../lib/utils';
 
-type BeforeInstallPromptEvent = Event & {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
-};
-
+/** Global PWA toasts — app updates and offline ready only (install is on login page). */
 export function PwaProvider() {
   const [needRefresh, setNeedRefresh] = useState(false);
   const [offlineReady, setOfflineReady] = useState(false);
-  const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
-  const [dismissedInstall, setDismissedInstall] = useState(false);
   const [dismissedOffline, setDismissedOffline] = useState(false);
 
   const updateSWRef = useRef<((reloadPage?: boolean) => Promise<void>) | null>(null);
@@ -29,35 +23,14 @@ export function PwaProvider() {
     });
   }, []);
 
-  useEffect(() => {
-    const handler = (e: Event) => {
-      e.preventDefault();
-      setInstallPrompt(e as BeforeInstallPromptEvent);
-    };
-
-    window.addEventListener('beforeinstallprompt', handler);
-    return () => window.removeEventListener('beforeinstallprompt', handler);
-  }, []);
-
-  async function handleInstall() {
-    if (!installPrompt) return;
-    await installPrompt.prompt();
-    const { outcome } = await installPrompt.userChoice;
-    if (outcome === 'accepted') {
-      setInstallPrompt(null);
-    }
-    setDismissedInstall(true);
-  }
-
   function handleRefresh() {
     void updateSWRef.current?.(true);
   }
 
-  const showInstall = installPrompt && !dismissedInstall;
   const showOffline = offlineReady && !dismissedOffline && !needRefresh;
   const showUpdate = needRefresh;
 
-  if (!showInstall && !showOffline && !showUpdate) {
+  if (!showOffline && !showUpdate) {
     return null;
   }
 
@@ -75,20 +48,9 @@ export function PwaProvider() {
           />
         )}
 
-        {showInstall && !showUpdate && (
+        {showOffline && !showUpdate && (
           <Banner
-            icon={<Download className="h-5 w-5 text-vt-blue" />}
-            title="Install Vikas Traders"
-            description="Add to your home screen for a faster app-like experience."
-            primaryLabel="Install"
-            onPrimary={handleInstall}
-            onDismiss={() => setDismissedInstall(true)}
-          />
-        )}
-
-        {showOffline && !showUpdate && !showInstall && (
-          <Banner
-            icon={<Download className="h-5 w-5 text-emerald-600" />}
+            icon={<RefreshCw className="h-5 w-5 text-emerald-600" />}
             title="Ready for offline"
             description="Browse catalog even without internet."
             primaryLabel="Got it"

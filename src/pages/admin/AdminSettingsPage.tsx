@@ -1,19 +1,17 @@
-import { useNavigate } from 'react-router-dom';
+import { ProfileSettingsForm } from '../../components/profile/ProfileSettingsForm';
+import { useProfileSettingsForm } from '../../hooks/useProfileSettingsForm';
 
-import { ProfileSettingsForm } from '../components/profile/ProfileSettingsForm';
-import { PageHeader } from '../components/ecommerce/PageHeader';
-import { useProfileSettingsForm } from '../hooks/useProfileSettingsForm';
-
-export function ProfileSettingsPage() {
-  const navigate = useNavigate();
-  const form = useProfileSettingsForm({
-    onSuccess: () => navigate('/profile'),
-  });
+export function AdminSettingsPage() {
+  const form = useProfileSettingsForm();
 
   return (
-    <div className="pb-8">
-      <PageHeader title="Settings" />
-      <div className="px-4">
+    <div>
+      <div className="mb-6 hidden sm:mb-8 lg:block">
+        <h1 className="vt-page-title">Settings</h1>
+        <p className="vt-page-desc">Manage your admin profile and account details</p>
+      </div>
+
+      <div className="mx-auto max-w-xl">
         <ProfileSettingsForm
           fileRef={form.fileRef}
           firstName={form.firstName}
@@ -29,12 +27,12 @@ export function ProfileSettingsPage() {
           error={form.error}
           phoneError={form.phoneError}
           setPhoneError={form.setPhoneError}
+          success={form.success}
           loading={form.loading}
           isDirty={form.isDirty}
           onAvatarChange={form.handleAvatarChange}
           onDiscard={form.handleDiscard}
           onSubmit={form.handleSubmit}
-          avatarFallbackClassName="bg-vt-light-blue text-3xl font-bold text-vt-blue"
         />
       </div>
     </div>
