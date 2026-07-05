@@ -20,11 +20,19 @@ export function useOrderNotifications() {
   const { data: orders = [] } = useMyOrders();
   const add = useNotificationStore((s) => s.add);
   const knownStatuses = useRef<Record<string, OrderStatus>>({});
+  const initialized = useRef(false);
 
   useEffect(() => {
     for (const order of orders) {
       const prev = knownStatuses.current[order.id];
-      if (prev && prev !== order.status) {
+      if (prev === undefined) {
+        if (initialized.current) {
+          add({
+            title: 'Order placed',
+            message: `We received your order #${order.id.slice(0, 8).toUpperCase()}. We'll notify you when it is confirmed.`,
+          });
+        }
+      } else if (prev !== order.status) {
         const message = statusMessage(order.status);
         if (message) {
           add({
@@ -35,5 +43,6 @@ export function useOrderNotifications() {
       }
       knownStatuses.current[order.id] = order.status;
     }
+    initialized.current = true;
   }, [orders, add]);
 }

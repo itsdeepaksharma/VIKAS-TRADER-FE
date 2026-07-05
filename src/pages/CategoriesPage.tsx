@@ -14,24 +14,22 @@ export function CategoriesPage() {
   return (
     <div>
       <PageHeader title="Categories" />
-      <div className="px-4 pb-4">
-        <SearchBar
-          className="mb-5"
-          placeholder="Search products..."
-          value={search}
-          onChange={setSearch}
-          onSearch={(q) => navigate(`/search?q=${encodeURIComponent(q)}`)}
-        />
-        {isLoading ? (
-          <p className="py-8 text-center text-vt-muted">Loading categories...</p>
-        ) : (
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-            {categories.map((category) => (
-              <CategoryCard key={category.id} category={category} />
-            ))}
-          </div>
-        )}
-      </div>
+      <SearchBar
+        className="mb-4"
+        placeholder="Search products..."
+        value={search}
+        onChange={setSearch}
+        onSearch={(q) => navigate(`/search?q=${encodeURIComponent(q)}`)}
+      />
+      {isLoading ? (
+        <p className="py-8 text-center text-vt-muted">Loading categories...</p>
+      ) : (
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+          {categories.map((category) => (
+            <CategoryCard key={category.id} category={category} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

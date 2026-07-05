@@ -6,6 +6,7 @@ export type Product = {
   rating: number;
   reviewCount: number;
   image: string;
+  images?: string[];
   categoryId: string;
   categorySlug: string;
   inStock: boolean;

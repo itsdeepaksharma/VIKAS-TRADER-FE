@@ -15,11 +15,13 @@ import { getApiErrorMessage } from '../../api/client';
 import { AdminModal } from '../../components/admin/AdminModal';
 import { AdminModalFooter } from '../../components/admin/AdminModalFooter';
 import { ResponsiveTable } from '../../components/admin/ResponsiveTable';
-import { ImageUploadField } from '../../components/admin/ImageUploadField';
+import { MultiImageUploadField } from '../../components/admin/MultiImageUploadField';
 import { GradientButton } from '../../components/ecommerce/GradientButton';
 import { Input } from '../../components/ui/input';
 import { mapCategory, mapProduct } from '../../lib/catalogMappers';
+import { getProductImages } from '../../lib/productImages';
 import { DEFAULT_PRODUCT_IMAGE } from '../../lib/imageUpload';
+import { buildProductImagePayload } from '../../lib/productImages';
 import { isLowStock, isOutOfStock } from '../../lib/stockStatus';
 import { cn, formatCurrency } from '../../lib/utils';
 import type { Product } from '../../types/product';
@@ -30,6 +32,7 @@ const emptyProduct: ProductPayload = {
   description: '',
   price: 0,
   image: '',
+  images: [],
   stock_quantity: 0,
   features: ['BPA Free'],
   colors: [],
@@ -87,12 +90,14 @@ export function AdminProductsPage() {
   };
 
   const createMutation = useMutation({
-    mutationFn: () =>
-      createProduct({
+    mutationFn: () => {
+      const imagePayload = buildProductImagePayload(form.images ?? [], DEFAULT_PRODUCT_IMAGE);
+      return createProduct({
         ...form,
-        image: form.image || DEFAULT_PRODUCT_IMAGE,
+        ...imagePayload,
         description: form.description || form.name,
-      }),
+      });
+    },
     onSuccess: () => {
       invalidate();
       setForm(emptyProduct);
@@ -106,11 +111,16 @@ export function AdminProductsPage() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: () =>
-      updateProduct(selected!.id, {
+    mutationFn: () => {
+      const imagePayload = buildProductImagePayload(
+        editForm.images ?? [],
+        editForm.image || DEFAULT_PRODUCT_IMAGE,
+      );
+      return updateProduct(selected!.id, {
         ...editForm,
-        image: editForm.image || DEFAULT_PRODUCT_IMAGE,
-      }),
+        ...imagePayload,
+      });
+    },
     onSuccess: () => {
       invalidate();
       closeModal();
@@ -128,6 +138,7 @@ export function AdminProductsPage() {
   });
 
   function openEdit(product: Product) {
+    const images = getProductImages(product);
     setSelected(product);
     setEditForm({
       category_id: product.categoryId,
@@ -135,7 +146,8 @@ export function AdminProductsPage() {
       description: product.description,
       price: product.price,
       original_price: product.originalPrice ?? null,
-      image: product.image,
+      image: images[0] ?? product.image,
+      images,
       stock_quantity: product.stockQuantity ?? 0,
       features: product.features,
       colors: product.colors,
@@ -188,7 +200,7 @@ export function AdminProductsPage() {
 
   return (
     <div>
-      <div className="mb-6 sm:mb-8">
+      <div className="mb-6 hidden sm:mb-8 lg:block">
         <h1 className="vt-page-title">{pageTitle}</h1>
         <p className="vt-page-desc">
           {stockFilter
@@ -266,7 +278,10 @@ export function AdminProductsPage() {
               onChange={(e) => setForm({ ...form, stock_quantity: Number(e.target.value) })}
             />
             <div className="sm:col-span-2">
-              <ImageUploadField value={form.image} onChange={(image) => setForm({ ...form, image })} />
+              <MultiImageUploadField
+                value={form.images ?? []}
+                onChange={(images) => setForm({ ...form, images, image: images[0] ?? '' })}
+              />
             </div>
             <Input
               className="sm:col-span-2"
@@ -378,9 +393,9 @@ export function AdminProductsPage() {
             }
           />
           <div className="sm:col-span-2">
-            <ImageUploadField
-              value={editForm.image}
-              onChange={(image) => setEditForm({ ...editForm, image })}
+            <MultiImageUploadField
+              value={editForm.images ?? []}
+              onChange={(images) => setEditForm({ ...editForm, images, image: images[0] ?? '' })}
             />
           </div>
           <Input

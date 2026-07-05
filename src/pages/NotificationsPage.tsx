@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 
 import { PageHeader } from '../components/ecommerce/PageHeader';
 import { useNotificationStore } from '../store/notificationStore';
+import { cn } from '../lib/utils';
 
 export function NotificationsPage() {
   const items = useNotificationStore((s) => s.items);
@@ -28,12 +29,29 @@ export function NotificationsPage() {
           items.map((n) => (
             <div
               key={n.id}
-              className={`rounded-2xl border p-4 shadow-vt-card ${
-                n.read ? 'border-vt-border bg-vt-surface' : 'border-vt-blue/30 bg-vt-light-blue/30'
-              }`}
+              className={cn(
+                'rounded-2xl border p-4 shadow-vt-card',
+                n.read
+                  ? 'border-vt-border bg-vt-surface'
+                  : 'border-vt-blue/40 bg-slate-100',
+              )}
             >
-              <p className="font-semibold text-vt-foreground">{n.title}</p>
-              <p className="mt-1 text-sm text-vt-muted">{n.message}</p>
+              <p
+                className={cn(
+                  'font-semibold',
+                  n.read ? 'text-vt-muted' : 'text-vt-foreground',
+                )}
+              >
+                {n.title}
+              </p>
+              <p
+                className={cn(
+                  'mt-1 text-sm',
+                  n.read ? 'text-vt-muted/80' : 'text-vt-foreground/75',
+                )}
+              >
+                {n.message}
+              </p>
               <p className="mt-2 text-xs text-vt-muted">
                 {new Date(n.createdAt).toLocaleString('en-IN')}
               </p>

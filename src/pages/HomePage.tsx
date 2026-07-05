@@ -56,7 +56,7 @@ export function HomePage() {
           onChange={setSearch}
           onSearch={handleSearch}
           topAction={
-            <NotificationBellMenu className="[&_button]:h-9 [&_button]:w-9 [&_button]:rounded-xl" />
+            <NotificationBellMenu className="[&_button]:h-9 [&_button]:w-9 [&_button]:rounded-xl [&_.notification-dot]:right-1.5 [&_.notification-dot]:top-1.5 [&_.notification-dot]:h-2.5 [&_.notification-dot]:w-2.5" />
           }
         />
       </section>

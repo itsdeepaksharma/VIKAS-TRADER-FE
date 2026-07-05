@@ -52,7 +52,7 @@ export function AdminUsersPage() {
 
   return (
     <div>
-      <div className="mb-6 sm:mb-8">
+      <div className="mb-6 hidden sm:mb-8 lg:block">
         <h1 className="vt-page-title">{pageTitle}</h1>
         <p className="vt-page-desc">
           {userFilter

@@ -4,7 +4,6 @@ import { FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { GradientButton } from '../components/ecommerce/GradientButton';
-import { DemoLoginCredentials } from '../components/demo/DemoModeBanner';
 import { VTLogo } from '../components/layout/VTLogo';
 import { Checkbox } from '../components/ui/checkbox';
 import { Input } from '../components/ui/input';
@@ -55,8 +54,6 @@ export function LoginPage() {
         <p className="mt-2 text-center text-sm text-vt-muted">
           Sign in to Vikas Traders wholesale &amp; retail
         </p>
-
-        <DemoLoginCredentials />
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <div>

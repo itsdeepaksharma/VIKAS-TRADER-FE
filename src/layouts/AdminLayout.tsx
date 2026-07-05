@@ -4,7 +4,6 @@ import {
   LogOut,
   Menu,
   Package,
-  Shield,
   ShoppingBag,
   Store,
   Users,
@@ -13,8 +12,11 @@ import {
 import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
-import { AppBrandHeader } from '../components/layout/AppBrandHeader';
+import { AdminShellHeader } from '../components/layout/AdminShellHeader';
+import { NotificationBellMenu } from '../components/ecommerce/NotificationBellMenu';
 import { VTLogo } from '../components/layout/VTLogo';
+import { useAdminOrderNotifications } from '../hooks/useAdminOrderNotifications';
+import { adminPageTitle } from '../lib/adminPageTitle';
 import { useAuthStore } from '../store/authStore';
 import { cn } from '../lib/utils';
 
@@ -43,8 +45,10 @@ function AdminSidebar({
       </p>
 
       <div className="mb-5 rounded-2xl bg-vt-gradient-card p-4 text-white">
-        <div className="flex items-center gap-2">
-          <Shield className="h-5 w-5 shrink-0" />
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/95 p-1">
+            <VTLogo size="home" className="h-9 w-auto max-w-[2.75rem]" />
+          </div>
           <span className="text-sm font-semibold">Super Admin</span>
         </div>
         <p className="mt-2 truncate text-xs text-white/90">{user?.name}</p>
@@ -91,6 +95,8 @@ export function AdminLayout() {
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useAdminOrderNotifications();
 
   useEffect(() => {
     setSidebarOpen(false);
@@ -146,26 +152,24 @@ export function AdminLayout() {
       </aside>
 
       <div className="flex min-h-screen min-w-0 flex-col lg:ml-64">
-        <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center gap-3 border-b border-vt-border bg-vt-surface px-3 shadow-sm sm:h-[4.25rem] sm:px-4 lg:hidden">
-          <button
-            type="button"
-            onClick={() => setSidebarOpen(true)}
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-vt-surface-muted text-vt-foreground"
-            aria-label="Open menu"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
-          <span className="min-w-0 flex-1 truncate text-sm font-bold text-vt-foreground sm:text-base">
-            Admin Panel
-          </span>
-        </header>
-
-        <div className="hidden lg:block">
-          <AppBrandHeader homeTo="/admin" />
-        </div>
-
-        <main className="min-w-0 flex-1 [--app-header-h:3.5rem] sm:[--app-header-h:4.25rem] lg:[--app-header-h:4.25rem]">
-          <div className="vt-container py-4 sm:py-5 lg:py-6">
+        <main className="min-w-0 flex-1">
+          <div className="vt-container space-y-4 py-4 sm:py-5 lg:py-6">
+            <AdminShellHeader
+              title={adminPageTitle(location.pathname)}
+              menuButton={
+                <button
+                  type="button"
+                  onClick={() => setSidebarOpen(true)}
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-vt-light-blue text-vt-foreground"
+                  aria-label="Open menu"
+                >
+                  <Menu className="h-5 w-5" />
+                </button>
+              }
+              actions={
+                <NotificationBellMenu className="shrink-0 [&_button]:h-9 [&_button]:w-9 [&_button]:rounded-xl [&_.notification-dot]:right-1.5 [&_.notification-dot]:top-1.5 [&_.notification-dot]:h-2.5 [&_.notification-dot]:w-2.5" />
+              }
+            />
             <Outlet />
           </div>
         </main>
