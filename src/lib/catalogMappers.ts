@@ -60,6 +60,8 @@ function mapOrderItem(item: ApiOrderItem): Order['items'][0] {
       description: item.product_name,
     },
     quantity: item.quantity,
+    selectedColor: item.selected_color ?? undefined,
+    selectedSize: item.selected_size ?? undefined,
   };
 }
 

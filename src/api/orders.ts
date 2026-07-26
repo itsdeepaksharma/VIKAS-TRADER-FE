@@ -7,6 +7,8 @@ export type ApiOrderItem = {
   product_image: string;
   quantity: number;
   unit_price: string | number;
+  selected_color?: string | null;
+  selected_size?: string | null;
 };
 
 export type ApiOrder = {
@@ -21,7 +23,12 @@ export type ApiOrder = {
 };
 
 export type CreateOrderPayload = {
-  items: { product_id: string; quantity: number }[];
+  items: {
+    product_id: string;
+    quantity: number;
+    selected_color?: string | null;
+    selected_size?: string | null;
+  }[];
 };
 
 export async function createOrder(payload: CreateOrderPayload): Promise<ApiOrder> {

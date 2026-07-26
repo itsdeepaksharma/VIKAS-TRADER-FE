@@ -1,16 +1,45 @@
 import { Heart, ShoppingCart, Trash2, Zap } from 'lucide-react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { AddToCartQuantityModal } from '../components/ecommerce/AddToCartQuantityModal';
 import { GradientButton } from '../components/ecommerce/GradientButton';
 import { PageHeader } from '../components/ecommerce/PageHeader';
 import { useCartStore } from '../store/cartStore';
 import { useWishlistStore } from '../store/wishlistStore';
+import type { Product } from '../types/product';
 import { formatCurrency } from '../lib/utils';
+
+type ModalMode = 'cart' | 'buyNow';
 
 export function WishlistPage() {
   const navigate = useNavigate();
-  const { items, toggle } = useWishlistStore();
+  const { items, toggle, remove } = useWishlistStore();
   const addItem = useCartStore((s) => s.addItem);
+
+  const [modalProduct, setModalProduct] = useState<Product | null>(null);
+  const [modalMode, setModalMode] = useState<ModalMode>('cart');
+
+  function openModal(product: Product, mode: ModalMode) {
+    setModalProduct(product);
+    setModalMode(mode);
+  }
+
+  function closeModal() {
+    setModalProduct(null);
+  }
+
+  function handleConfirmQuantity(quantity: number) {
+    if (!modalProduct) return;
+    addItem(modalProduct, quantity);
+    remove(modalProduct.id);
+    closeModal();
+    if (modalMode === 'buyNow') {
+      navigate('/checkout');
+    } else {
+      navigate('/cart');
+    }
+  }
 
   if (items.length === 0) {
     return (
@@ -53,7 +82,7 @@ export function WishlistPage() {
                 <button
                   type="button"
                   disabled={!product.inStock}
-                  onClick={() => addItem(product)}
+                  onClick={() => openModal(product, 'cart')}
                   className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-vt-gradient py-2 text-sm font-semibold text-white disabled:opacity-50"
                 >
                   <ShoppingCart className="h-4 w-4" />
@@ -62,10 +91,7 @@ export function WishlistPage() {
                 <button
                   type="button"
                   disabled={!product.inStock}
-                  onClick={() => {
-                    addItem(product);
-                    navigate('/checkout');
-                  }}
+                  onClick={() => openModal(product, 'buyNow')}
                   className="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-vt-blue py-2 text-sm font-semibold text-vt-blue disabled:opacity-50"
                 >
                   <Zap className="h-4 w-4" />
@@ -83,6 +109,14 @@ export function WishlistPage() {
           </div>
         ))}
       </div>
+
+      <AddToCartQuantityModal
+        open={modalProduct != null}
+        product={modalProduct}
+        confirmLabel={modalMode === 'buyNow' ? 'Buy Now' : 'Add to Cart'}
+        onClose={closeModal}
+        onConfirm={handleConfirmQuantity}
+      />
     </div>
   );
 }

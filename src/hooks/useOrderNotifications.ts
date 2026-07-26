@@ -30,6 +30,7 @@ export function useOrderNotifications() {
           add({
             title: 'Order placed',
             message: `We received your order #${order.id.slice(0, 8).toUpperCase()}. We'll notify you when it is confirmed.`,
+            linkTo: `/orders/${order.id}`,
           });
         }
       } else if (prev !== order.status) {
@@ -38,6 +39,7 @@ export function useOrderNotifications() {
           add({
             title: order.status === 'cancelled' ? 'Order cancelled' : 'Order confirmed',
             message: `${message} Order #${order.id.slice(0, 8).toUpperCase()}.`,
+            linkTo: `/orders/${order.id}`,
           });
         }
       }

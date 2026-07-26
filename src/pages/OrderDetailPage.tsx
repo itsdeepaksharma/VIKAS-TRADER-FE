@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { CustomerOrderBadge } from '../components/ecommerce/CustomerOrderBadge';
 import { PageHeader } from '../components/ecommerce/PageHeader';
 import { useMyOrders } from '../hooks/useOrders';
+import { formatCartVariantLabel } from '../lib/cartVariants';
 import { formatCurrency } from '../lib/utils';
 
 export function OrderDetailPage() {
@@ -64,8 +65,18 @@ export function OrderDetailPage() {
         <div className="rounded-3xl border border-vt-border bg-vt-surface p-4 shadow-vt-card">
           <h2 className="mb-3 font-semibold text-vt-foreground">Items</h2>
           <ul className="space-y-3">
-            {order.items.map((item) => (
-              <li key={`${item.product.id}-${item.quantity}`} className="flex gap-3">
+            {order.items.map((item, index) => {
+              const variantLabel = formatCartVariantLabel(
+                item.product,
+                item.selectedColor,
+                item.selectedSize,
+              );
+
+              return (
+              <li
+                key={`${item.product.id}-${item.selectedColor ?? ''}-${item.selectedSize ?? ''}-${index}`}
+                className="flex gap-3"
+              >
                 <img
                   src={item.product.image}
                   alt={item.product.name}
@@ -78,13 +89,17 @@ export function OrderDetailPage() {
                   >
                     {item.product.name}
                   </Link>
+                  {variantLabel && (
+                    <p className="text-xs font-medium text-vt-blue">{variantLabel}</p>
+                  )}
                   <p className="text-sm text-vt-muted">Qty: {item.quantity}</p>
                   <p className="font-semibold text-vt-blue">
                     {formatCurrency(item.product.price * item.quantity)}
                   </p>
                 </div>
               </li>
-            ))}
+              );
+            })}
           </ul>
           <div className="mt-4 flex justify-between border-t border-vt-border pt-3 text-lg font-bold text-vt-foreground">
             <span>Total</span>

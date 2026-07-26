@@ -2,10 +2,12 @@ import { motion } from 'framer-motion';
 import { Heart, ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+import { findCartItemForProduct, getDefaultProductOptions } from '../../lib/cartVariants';
+import { cn, formatCurrency } from '../../lib/utils';
 import { useCartStore } from '../../store/cartStore';
 import { useWishlistStore } from '../../store/wishlistStore';
 import type { Product } from '../../types/product';
-import { cn, formatCurrency } from '../../lib/utils';
+import { QuantitySelector } from './QuantitySelector';
 
 type ProductCardProps = {
   product: Product;
@@ -14,9 +16,16 @@ type ProductCardProps = {
 
 export function ProductCard({ product, layout = 'grid' }: ProductCardProps) {
   const addItem = useCartStore((s) => s.addItem);
+  const updateQuantity = useCartStore((s) => s.updateQuantity);
+  const cartItems = useCartStore((s) => s.items);
+  const defaultOptions = getDefaultProductOptions(product);
+  const cartItem = findCartItemForProduct(cartItems, product, defaultOptions);
+  const cartQuantity = cartItem?.quantity ?? 0;
   const { toggle, has } = useWishlistStore();
   const wished = has(product.id);
   const outOfStock = !product.inStock;
+  const inCart = cartQuantity > 0;
+  const maxQuantity = Math.max(1, product.stockQuantity ?? 99);
 
   if (layout === 'horizontal') {
     return (
@@ -97,20 +106,39 @@ export function ProductCard({ product, layout = 'grid' }: ProductCardProps) {
         </div>
       </Link>
       <div className="px-3 pb-3">
-        <button
-          type="button"
-          disabled={outOfStock}
-          onClick={() => addItem(product)}
-          className={cn(
-            'flex w-full items-center justify-center gap-2 rounded-xl py-2 text-sm font-semibold transition-colors',
-            outOfStock
-              ? 'cursor-not-allowed bg-slate-100 text-vt-muted'
-              : 'bg-vt-light-blue text-vt-blue hover:bg-vt-gradient hover:text-white',
-          )}
-        >
-          <ShoppingCart className="h-4 w-4" />
-          {outOfStock ? 'Out of Stock' : 'Add to Cart'}
-        </button>
+        {inCart ? (
+          <div className="flex items-center gap-2">
+            <QuantitySelector
+              value={cartQuantity}
+              min={0}
+              max={maxQuantity}
+              onChange={(qty) => updateQuantity(product.id, qty, defaultOptions)}
+              className="flex-1 justify-between"
+            />
+            <Link
+              to="/cart"
+              className="flex shrink-0 items-center justify-center gap-1.5 rounded-xl bg-vt-gradient px-3 py-2 text-xs font-semibold text-white sm:text-sm"
+            >
+              <ShoppingCart className="h-4 w-4" />
+              Go to Cart
+            </Link>
+          </div>
+        ) : (
+          <button
+            type="button"
+            disabled={outOfStock}
+            onClick={() => addItem(product, 1, defaultOptions)}
+            className={cn(
+              'flex w-full items-center justify-center gap-2 rounded-xl py-2 text-sm font-semibold transition-colors',
+              outOfStock
+                ? 'cursor-not-allowed bg-slate-100 text-vt-muted'
+                : 'bg-vt-light-blue text-vt-blue hover:bg-vt-gradient hover:text-white',
+            )}
+          >
+            <ShoppingCart className="h-4 w-4" />
+            {outOfStock ? 'Out of Stock' : 'Add to Cart'}
+          </button>
+        )}
       </div>
     </motion.div>
   );

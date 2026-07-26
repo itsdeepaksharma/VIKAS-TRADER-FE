@@ -7,11 +7,13 @@ export type AppNotification = {
   message: string;
   createdAt: string;
   read: boolean;
+  linkTo?: string;
 };
 
 type NotificationState = {
   items: AppNotification[];
   add: (notification: Omit<AppNotification, 'id' | 'createdAt' | 'read'>) => void;
+  markRead: (id: string) => void;
   markAllRead: () => void;
   unreadCount: () => number;
 };
@@ -31,6 +33,10 @@ export const useNotificationStore = create<NotificationState>()(
             },
             ...state.items,
           ].slice(0, 50),
+        })),
+      markRead: (id) =>
+        set((state) => ({
+          items: state.items.map((n) => (n.id === id ? { ...n, read: true } : n)),
         })),
       markAllRead: () =>
         set((state) => ({

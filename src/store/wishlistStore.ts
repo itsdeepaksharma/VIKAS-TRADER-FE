@@ -8,6 +8,7 @@ type WishlistState = {
   toggle: (product: Product) => void;
   remove: (productId: string) => void;
   has: (productId: string) => boolean;
+  itemCount: () => number;
 };
 
 export const useWishlistStore = create<WishlistState>()(
@@ -27,6 +28,7 @@ export const useWishlistStore = create<WishlistState>()(
           items: state.items.filter((p) => p.id !== productId),
         })),
       has: (productId) => get().items.some((p) => p.id === productId),
+      itemCount: () => get().items.length,
     }),
     { name: 'vt-wishlist' },
   ),
