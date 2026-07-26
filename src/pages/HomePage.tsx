@@ -11,6 +11,7 @@ import { SectionHeader } from '../components/ecommerce/SectionHeader';
 import { VTLogo } from '../components/layout/VTLogo';
 import { quickActions } from '../data/mockCategories';
 import { useCategories, useProducts } from '../hooks/useCatalog';
+import { getTimeGreeting } from '../lib/greeting';
 import { useAuthStore } from '../store/authStore';
 
 const quickIcons = {
@@ -42,7 +43,7 @@ export function HomePage() {
             <VTLogo size="home" />
           </Link>
           <div className="min-w-0 flex-1">
-            <p className="text-sm text-vt-muted">Good Morning,</p>
+            <p className="text-sm text-vt-muted">{getTimeGreeting()},</p>
             <h1 className="text-xl font-bold text-vt-foreground">
               {user?.firstName ?? user?.name?.split(' ')[0] ?? 'Guest'} 👋
             </h1>
@@ -56,7 +57,10 @@ export function HomePage() {
           onChange={setSearch}
           onSearch={handleSearch}
           topAction={
-            <NotificationBellMenu className="[&_button]:h-9 [&_button]:w-9 [&_button]:rounded-xl [&_.notification-dot]:right-1.5 [&_.notification-dot]:top-1.5 [&_.notification-dot]:h-2.5 [&_.notification-dot]:w-2.5" />
+            <NotificationBellMenu
+              triggerClassName="h-9 w-9 rounded-xl"
+              className="[&_.notification-dot]:right-1.5 [&_.notification-dot]:top-1.5 [&_.notification-dot]:h-2.5 [&_.notification-dot]:w-2.5"
+            />
           }
         />
       </section>

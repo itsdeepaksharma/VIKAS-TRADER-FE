@@ -2,6 +2,7 @@ import { ChevronDown, Mail, MapPin, Phone, User } from 'lucide-react';
 
 import { StatusBadge } from '../ecommerce/StatusBadge';
 import { adminStatusLabel, ADMIN_ORDER_STATUS_OPTIONS } from '../../lib/adminOrderStatus';
+import { formatCartVariantLabel } from '../../lib/cartVariants';
 import { formatCurrency, cn } from '../../lib/utils';
 import type { Order } from '../../types/product';
 
@@ -105,9 +106,16 @@ export function AdminOrderAccordionItem({
             Order items
           </p>
           <ul className="max-h-48 space-y-2 overflow-y-auto">
-            {order.items.map((item) => (
+            {order.items.map((item, index) => {
+              const variantLabel = formatCartVariantLabel(
+                item.product,
+                item.selectedColor,
+                item.selectedSize,
+              );
+
+              return (
               <li
-                key={`${item.product.id}-${item.quantity}`}
+                key={`${item.product.id}-${item.selectedColor ?? ''}-${item.selectedSize ?? ''}-${index}`}
                 className="flex items-center gap-3 text-sm"
               >
                 <img
@@ -117,6 +125,9 @@ export function AdminOrderAccordionItem({
                 />
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-medium text-vt-foreground">{item.product.name}</p>
+                  {variantLabel && (
+                    <p className="text-xs font-medium text-vt-blue">{variantLabel}</p>
+                  )}
                   <p className="text-vt-muted">
                     Qty {item.quantity} × {formatCurrency(item.product.price)}
                   </p>
@@ -125,7 +136,8 @@ export function AdminOrderAccordionItem({
                   {formatCurrency(item.product.price * item.quantity)}
                 </span>
               </li>
-            ))}
+              );
+            })}
           </ul>
         </div>
 

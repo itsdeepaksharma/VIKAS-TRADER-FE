@@ -3,6 +3,7 @@ import { Grid3X3, Heart, Home, ShoppingCart, User } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 
 import { useCartStore } from '../../store/cartStore';
+import { useWishlistStore } from '../../store/wishlistStore';
 import { cn } from '../../lib/utils';
 
 const navItems = [
@@ -14,7 +15,8 @@ const navItems = [
 ];
 
 export function BottomNavigation() {
-  const itemCount = useCartStore((s) => s.itemCount());
+  const cartCount = useCartStore((s) => s.itemCount());
+  const wishlistCount = useWishlistStore((s) => s.itemCount());
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-vt-border bg-vt-surface/95 px-2 pb-safe pt-2 shadow-vt-card backdrop-blur-lg">
@@ -31,9 +33,14 @@ export function BottomNavigation() {
               >
                 <div className="relative">
                   <Icon className={cn('h-6 w-6', isActive && 'stroke-[2.5]')} />
-                  {label === 'Cart' && itemCount > 0 && (
+                  {label === 'Cart' && cartCount > 0 && (
                     <span className="absolute -right-2 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-vt-gradient px-1 text-[10px] font-bold text-white">
-                      {itemCount > 9 ? '9+' : itemCount}
+                      {cartCount > 9 ? '9+' : cartCount}
+                    </span>
+                  )}
+                  {label === 'Wishlist' && wishlistCount > 0 && (
+                    <span className="absolute -right-2 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
+                      {wishlistCount > 9 ? '9+' : wishlistCount}
                     </span>
                   )}
                 </div>

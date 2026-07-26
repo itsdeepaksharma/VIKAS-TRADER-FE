@@ -288,7 +288,10 @@ export function AdminLayout() {
               }
               actions={
                 <div className="flex shrink-0 items-center gap-1.5">
-                  <NotificationBellMenu className="[&_button]:h-9 [&_button]:w-9 [&_button]:rounded-xl [&_.notification-dot]:right-1.5 [&_.notification-dot]:top-1.5 [&_.notification-dot]:h-2.5 [&_.notification-dot]:w-2.5" />
+                  <NotificationBellMenu
+                    triggerClassName="h-9 w-9 rounded-xl"
+                    className="[&_.notification-dot]:right-1.5 [&_.notification-dot]:top-1.5 [&_.notification-dot]:h-2.5 [&_.notification-dot]:w-2.5"
+                  />
                   <ThemeToggle className="h-9 w-9 shadow-sm" />
                 </div>
               }
