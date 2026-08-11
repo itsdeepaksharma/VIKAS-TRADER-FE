@@ -18,6 +18,7 @@ export function CheckoutPage() {
   const subtotal = useCartStore((s) => s.subtotal());
   const clearCart = useCartStore((s) => s.clearCart);
   const [error, setError] = useState('');
+  const [orderPlaced, setOrderPlaced] = useState(false);
   const { issues, syncing, syncCartStock } = useCartStockSync();
   const createOrder = useCreateOrder();
 
@@ -26,10 +27,11 @@ export function CheckoutPage() {
   }, [syncCartStock]);
 
   useEffect(() => {
-    if (items.length === 0) {
+    // Skip empty-cart bounce after a successful place — clearCart races navigate('/orders').
+    if (!orderPlaced && items.length === 0) {
       navigate('/cart', { replace: true });
     }
-  }, [items.length, navigate]);
+  }, [items.length, navigate, orderPlaced]);
 
   async function handlePlaceOrder() {
     setError('');
@@ -55,6 +57,7 @@ export function CheckoutPage() {
           selected_size: i.selectedSize ?? null,
         })),
       });
+      setOrderPlaced(true);
       clearCart();
       navigate('/orders');
     } catch (err) {
