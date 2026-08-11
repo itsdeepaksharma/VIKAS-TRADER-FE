@@ -1,17 +1,29 @@
 import { Bell } from 'lucide-react';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { PageHeader } from '../components/ecommerce/PageHeader';
-import { useNotificationStore } from '../store/notificationStore';
+import {
+  formatNotificationDate,
+  getNotificationDestination,
+} from '../lib/notificationLinks';
+import { useNotificationStore, type AppNotification } from '../store/notificationStore';
 import { cn } from '../lib/utils';
 
 export function NotificationsPage() {
+  const navigate = useNavigate();
   const items = useNotificationStore((s) => s.items);
   const markAllRead = useNotificationStore((s) => s.markAllRead);
+  const markRead = useNotificationStore((s) => s.markRead);
 
   useEffect(() => {
     markAllRead();
   }, [markAllRead]);
+
+  function handleNotificationClick(notification: AppNotification) {
+    markRead(notification.id);
+    navigate(getNotificationDestination(notification));
+  }
 
   return (
     <div className="pb-6">
@@ -27,13 +39,13 @@ export function NotificationsPage() {
           </div>
         ) : (
           items.map((n) => (
-            <div
+            <button
               key={n.id}
+              type="button"
+              onClick={() => handleNotificationClick(n)}
               className={cn(
-                'rounded-2xl border p-4 shadow-vt-card',
-                n.read
-                  ? 'border-vt-border bg-vt-surface'
-                  : 'border-vt-blue/40 bg-slate-100',
+                'w-full rounded-2xl border p-4 text-left shadow-vt-card transition-colors hover:bg-vt-surface-muted',
+                n.read ? 'border-vt-border bg-vt-surface' : 'border-vt-blue/40 bg-vt-light-blue/30',
               )}
             >
               <p
@@ -46,16 +58,14 @@ export function NotificationsPage() {
               </p>
               <p
                 className={cn(
-                  'mt-1 text-sm',
+                  'mt-1 break-words text-sm leading-relaxed',
                   n.read ? 'text-vt-muted/80' : 'text-vt-foreground/75',
                 )}
               >
                 {n.message}
               </p>
-              <p className="mt-2 text-xs text-vt-muted">
-                {new Date(n.createdAt).toLocaleString('en-IN')}
-              </p>
-            </div>
+              <p className="mt-2 text-xs text-vt-muted">{formatNotificationDate(n.createdAt)}</p>
+            </button>
           ))
         )}
       </div>

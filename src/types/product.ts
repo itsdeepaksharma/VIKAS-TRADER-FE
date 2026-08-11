@@ -52,7 +52,12 @@ export type Order = {
   paymentMethod?: string;
   shippingAddress?: string;
   subtotal?: number;
-  items: { product: Product; quantity: number }[];
+  items: {
+    product: Product;
+    quantity: number;
+    selectedColor?: string;
+    selectedSize?: string;
+  }[];
   total: number;
   buyer?: OrderBuyer;
 };

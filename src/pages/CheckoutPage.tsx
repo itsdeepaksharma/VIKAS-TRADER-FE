@@ -9,6 +9,7 @@ import { PageHeader } from '../components/ecommerce/PageHeader';
 import { StepIndicator } from '../components/ecommerce/StepIndicator';
 import { useCartStockSync } from '../hooks/useCartStockSync';
 import { useCreateOrder } from '../hooks/useOrders';
+import { resolveColorLabel } from '../lib/cartVariants';
 import { useCartStore } from '../store/cartStore';
 
 export function CheckoutPage() {
@@ -17,6 +18,7 @@ export function CheckoutPage() {
   const subtotal = useCartStore((s) => s.subtotal());
   const clearCart = useCartStore((s) => s.clearCart);
   const [error, setError] = useState('');
+  const [orderPlaced, setOrderPlaced] = useState(false);
   const { issues, syncing, syncCartStock } = useCartStockSync();
   const createOrder = useCreateOrder();
 
@@ -25,10 +27,11 @@ export function CheckoutPage() {
   }, [syncCartStock]);
 
   useEffect(() => {
-    if (items.length === 0) {
+    // Skip empty-cart bounce after a successful place — clearCart races navigate('/orders').
+    if (!orderPlaced && items.length === 0) {
       navigate('/cart', { replace: true });
     }
-  }, [items.length, navigate]);
+  }, [items.length, navigate, orderPlaced]);
 
   async function handlePlaceOrder() {
     setError('');
@@ -50,8 +53,11 @@ export function CheckoutPage() {
         items: latestItems.map((i) => ({
           product_id: i.product.id,
           quantity: i.quantity,
+          selected_color: resolveColorLabel(i.product, i.selectedColor) ?? null,
+          selected_size: i.selectedSize ?? null,
         })),
       });
+      setOrderPlaced(true);
       clearCart();
       navigate('/orders');
     } catch (err) {
@@ -63,12 +69,12 @@ export function CheckoutPage() {
   const canPlaceOrder = items.length > 0 && !syncing && !createOrder.isPending;
 
   return (
-    <div className="min-h-screen bg-vt-surface-muted pb-28">
+    <div className="min-h-screen bg-vt-surface-muted pb-40">
       <PageHeader title="Checkout" />
       <div className="space-y-6 px-4 py-4">
         <StepIndicator currentStep={1} />
 
-        <CheckoutCard subtotal={subtotal} />
+        <CheckoutCard items={items} subtotal={subtotal} />
 
         <CartStockAlerts issues={issues} syncing={syncing} />
 
@@ -80,11 +86,11 @@ export function CheckoutPage() {
         {error && <p className="rounded-2xl bg-red-50 p-3 text-sm text-red-600">{error}</p>}
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 border-t border-vt-border bg-vt-surface p-4">
-        <div className="mx-auto max-w-lg">
+      <div className="fixed inset-x-0 bottom-20 z-40 border-t border-vt-border bg-vt-surface/95 px-4 py-3 backdrop-blur-sm">
+        <div className="flex justify-center">
           <GradientButton
-            fullWidth
-            size="lg"
+            size="default"
+            className="min-w-[11rem] px-8"
             disabled={!canPlaceOrder}
             onClick={handlePlaceOrder}
           >

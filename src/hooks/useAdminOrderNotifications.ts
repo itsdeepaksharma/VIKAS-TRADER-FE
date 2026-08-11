@@ -25,6 +25,7 @@ export function useAdminOrderNotifications() {
           add({
             title: 'New order received',
             message: `Order #${order.id.slice(0, 8).toUpperCase()} is waiting for confirmation.`,
+            linkTo: '/admin/orders',
           });
         }
         knownPendingIds.current.add(order.id);
@@ -35,11 +36,13 @@ export function useAdminOrderNotifications() {
           add({
             title: 'Order cancelled',
             message: `Order #${order.id.slice(0, 8).toUpperCase()} was cancelled.`,
+            linkTo: '/admin/orders',
           });
         } else if (prevStatus === 'pending' && order.status === 'processing') {
           add({
             title: 'Order confirmed',
             message: `Order #${order.id.slice(0, 8).toUpperCase()} is ready to process.`,
+            linkTo: '/admin/orders',
           });
         }
       }

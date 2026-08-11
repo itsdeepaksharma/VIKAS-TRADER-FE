@@ -5,7 +5,7 @@ import { BottomNavigation } from '../components/ecommerce/BottomNavigation';
 import { PageTransition } from '../components/layout/PageTransition';
 import { useOrderNotifications } from '../hooks/useOrderNotifications';
 
-const hideNavPaths = ['/login', '/checkout', '/products'];
+const hideNavPaths = ['/login'];
 
 export function MainLayout() {
   const location = useLocation();

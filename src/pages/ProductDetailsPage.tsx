@@ -5,7 +5,9 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import { GradientButton } from '../components/ecommerce/GradientButton';
 import { PageHeader } from '../components/ecommerce/PageHeader';
+import { QuantitySelector } from '../components/ecommerce/QuantitySelector';
 import { useProduct } from '../hooks/useCatalog';
+import { findCartItemForProduct } from '../lib/cartVariants';
 import { getProductImages } from '../lib/productImages';
 import { useCartStore } from '../store/cartStore';
 import { useWishlistStore } from '../store/wishlistStore';
@@ -16,19 +18,42 @@ export function ProductDetailsPage() {
   const navigate = useNavigate();
   const { data: product, isLoading } = useProduct(id);
   const addItem = useCartStore((s) => s.addItem);
+  const updateQuantity = useCartStore((s) => s.updateQuantity);
+  const cartItems = useCartStore((s) => s.items);
   const { toggle, has } = useWishlistStore();
 
   const [selectedColor, setSelectedColor] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+  const [quantityError, setQuantityError] = useState('');
 
   useEffect(() => {
-    if (product) {
-      setSelectedColor(product.colors[0]?.id ?? '');
-      setSelectedSize(product.sizes[0] ?? '');
-      setActiveImageIndex(0);
-    }
+    if (!product) return;
+    const defaultColor = product.colors[0]?.id ?? '';
+    const defaultSize = product.sizes[0] ?? '';
+    setSelectedColor(defaultColor);
+    setSelectedSize(defaultSize);
+    setActiveImageIndex(0);
+    setQuantityError('');
+
+    const existing = findCartItemForProduct(cartItems, product, {
+      color: defaultColor || undefined,
+      size: defaultSize || undefined,
+    });
+    setQuantity(existing?.quantity ?? 1);
   }, [product]);
+
+  useEffect(() => {
+    if (!product) return;
+    const existing = findCartItemForProduct(cartItems, product, {
+      color: selectedColor || undefined,
+      size: selectedSize || undefined,
+    });
+    if (existing) {
+      setQuantity(existing.quantity);
+    }
+  }, [product, selectedColor, selectedSize, cartItems]);
 
   if (isLoading) {
     return (
@@ -56,18 +81,58 @@ export function ProductDetailsPage() {
   const discount = product.originalPrice
     ? Math.round((1 - product.price / product.originalPrice) * 100)
     : 0;
+  const maxQuantity = Math.max(1, product.stockQuantity ?? 99);
+  const existingCartItem = findCartItemForProduct(cartItems, product, {
+    color: selectedColor || undefined,
+    size: selectedSize || undefined,
+  });
+  const alreadyInCart = Boolean(existingCartItem);
+
+  function validateQuantity(): boolean {
+    if (!quantity || quantity < 1) {
+      setQuantityError('Please select a quantity before continuing.');
+      return false;
+    }
+    if (quantity > maxQuantity) {
+      setQuantityError(`Only ${maxQuantity} unit${maxQuantity === 1 ? '' : 's'} available in stock.`);
+      return false;
+    }
+    setQuantityError('');
+    return true;
+  }
 
   function handleAddToCart() {
-    if (!product || outOfStock) return;
-    addItem(product, 1, { color: selectedColor, size: selectedSize });
+    if (!product || outOfStock || !validateQuantity()) return;
+    const options = { color: selectedColor || undefined, size: selectedSize || undefined };
+    if (alreadyInCart) {
+      updateQuantity(product.id, quantity, options);
+    } else {
+      addItem(product, quantity, options);
+    }
     navigate('/cart');
+  }
+
+  function handleBuyNow() {
+    if (outOfStock || !product || !validateQuantity()) return;
+    const options = { color: selectedColor || undefined, size: selectedSize || undefined };
+    if (alreadyInCart) {
+      updateQuantity(product.id, quantity, options);
+    } else {
+      addItem(product, quantity, options);
+    }
+    navigate('/checkout');
+  }
+
+  function handleQuantityChange(nextQuantity: number) {
+    setQuantity(nextQuantity);
+    if (quantityError) setQuantityError('');
   }
 
   return (
     <div className="flex min-h-0 flex-col">
       <PageHeader title="Product Details" />
 
-      <div className="flex-1 pb-36 md:pb-8">
+      <div className="flex-1 pb-44 md:pb-8">
         <div className="md:grid md:grid-cols-2 md:items-start md:gap-8 lg:gap-10">
         <div className="md:sticky md:top-4">
         <motion.div
@@ -178,6 +243,22 @@ export function ProductDetailsPage() {
             </div>
           )}
 
+          <div className="mt-5">
+            <p className="mb-2 text-sm font-semibold text-vt-foreground">Quantity</p>
+            <QuantitySelector
+              value={quantity}
+              min={1}
+              max={maxQuantity}
+              onChange={handleQuantityChange}
+            />
+            {!outOfStock && product.stockQuantity != null && product.stockQuantity <= 5 && (
+              <p className="mt-2 text-xs font-medium text-amber-600">
+                Only {product.stockQuantity} left in stock
+              </p>
+            )}
+            {quantityError && <p className="mt-2 text-sm text-red-500">{quantityError}</p>}
+          </div>
+
           <p className="mt-5 text-sm leading-relaxed text-vt-muted">{product.description}</p>
 
           <div className="mt-6 hidden gap-3 md:flex">
@@ -187,17 +268,13 @@ export function ProductDetailsPage() {
               disabled={outOfStock}
               onClick={handleAddToCart}
             >
-              {outOfStock ? 'Out of Stock' : 'Add to Cart'}
+              {outOfStock ? 'Out of Stock' : alreadyInCart ? 'Update Cart' : 'Add to Cart'}
             </GradientButton>
             <GradientButton
               fullWidth
               className="flex-1 !bg-vt-navy"
               disabled={outOfStock}
-              onClick={() => {
-                if (outOfStock || !product) return;
-                addItem(product, 1, { color: selectedColor, size: selectedSize });
-                navigate('/checkout');
-              }}
+              onClick={handleBuyNow}
             >
               Buy Now
             </GradientButton>
@@ -206,28 +283,29 @@ export function ProductDetailsPage() {
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-vt-border bg-vt-surface p-3 shadow-[0_-8px_32px_rgba(0,0,0,0.08)] sm:p-4 md:hidden">
-        <div className="vt-container flex gap-2 sm:gap-3">
+      <div className="fixed bottom-20 left-0 right-0 z-40 border-t border-vt-border bg-vt-surface p-3 shadow-[0_-8px_32px_rgba(0,0,0,0.08)] sm:p-4 md:hidden">
+        <div className="vt-container">
+          {quantityError && (
+            <p className="mb-2 text-center text-xs font-medium text-red-500">{quantityError}</p>
+          )}
+          <div className="flex gap-2 sm:gap-3">
           <GradientButton
             fullWidth
             className="flex-1"
             disabled={outOfStock}
             onClick={handleAddToCart}
           >
-            {outOfStock ? 'Out of Stock' : 'Add to Cart'}
+            {outOfStock ? 'Out of Stock' : alreadyInCart ? 'Update Cart' : 'Add to Cart'}
           </GradientButton>
           <GradientButton
             fullWidth
             className="flex-1 !bg-vt-dark"
             disabled={outOfStock}
-            onClick={() => {
-              if (outOfStock || !product) return;
-              addItem(product, 1, { color: selectedColor, size: selectedSize });
-              navigate('/checkout');
-            }}
+            onClick={handleBuyNow}
           >
             Buy Now
           </GradientButton>
+          </div>
         </div>
       </div>
     </div>
